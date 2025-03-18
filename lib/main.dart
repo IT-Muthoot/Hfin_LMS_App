@@ -1,5 +1,4 @@
-
-
+import 'dart:async';
 import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
@@ -19,10 +18,12 @@ import 'View/SplashView.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 const String channelId = 'high_importance_channel';
 const String channelName = 'High Importance Notifications';
-const String channelDescription = 'This channel is used for important notifications.';
+const String channelDescription =
+    'This channel is used for important notifications.';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -34,12 +35,12 @@ Future<void> backgroundHandler(RemoteMessage message) async {
 
     if (title != null && body != null) {
       final prefs = await SharedPreferences.getInstance();
-      List<String> notificationsJson = prefs.getStringList('notifications') ?? [];
+      List<String> notificationsJson =
+          prefs.getStringList('notifications') ?? [];
       final newNotification = NotificationModel(title: title, body: body);
       notificationsJson.add(jsonEncode(newNotification.toJson()));
       prefs.setStringList('notifications', notificationsJson);
     }
-
   }
 }
 
@@ -56,15 +57,18 @@ void setupFirebaseMessaging(BuildContext context) {
 
       if (title != null && body != null) {
         final newNotification = NotificationModel(title: title, body: body);
-        Provider.of<NotificationProvider>(context, listen: false).addNotification(newNotification);
+        Provider.of<NotificationProvider>(context, listen: false)
+            .addNotification(newNotification);
 
         final prefs = await SharedPreferences.getInstance();
-        List<String> notificationsJson = prefs.getStringList('notifications') ?? [];
+        List<String> notificationsJson =
+            prefs.getStringList('notifications') ?? [];
         notificationsJson.add(jsonEncode(newNotification.toJson()));
         prefs.setStringList('notifications', notificationsJson);
 
         // Display local notification
-        const AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        const AndroidNotificationDetails androidPlatformChannelSpecifics =
+            AndroidNotificationDetails(
           channelId,
           channelName,
           channelDescription: channelDescription,
@@ -72,7 +76,8 @@ void setupFirebaseMessaging(BuildContext context) {
           priority: Priority.high,
           showWhen: false,
         );
-        const DarwinNotificationDetails iosPlatformChannelSpecifics = DarwinNotificationDetails(
+        const DarwinNotificationDetails iosPlatformChannelSpecifics =
+            DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: true,
           presentSound: true,
@@ -80,8 +85,10 @@ void setupFirebaseMessaging(BuildContext context) {
         // const NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
         // const NotificationDetails platformChannelSpecifics1 = NotificationDetails(iOS: iosPlatformChannelSpecifics);
         // Combine platform-specific notification details
-        const NotificationDetails platformChannelSpecifics = NotificationDetails(
-            android: androidPlatformChannelSpecifics, iOS: iosPlatformChannelSpecifics);
+        const NotificationDetails platformChannelSpecifics =
+            NotificationDetails(
+                android: androidPlatformChannelSpecifics,
+                iOS: iosPlatformChannelSpecifics);
         await flutterLocalNotificationsPlugin.show(
           0,
           title,
@@ -99,18 +106,27 @@ Future<void> setupNotificationChannel() async {
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel', // id
     'High Importance Notifications', // name
-    description: 'This channel is used for important notifications.', // description
+    description:
+        'This channel is used for important notifications.', // description
     importance: Importance.max,
     playSound: true,
-    sound: RawResourceAndroidNotificationSound('notification_sound'), // Ensure you have a sound file named 'notification_sound.mp3' in the 'res/raw' directory
+    sound: RawResourceAndroidNotificationSound(
+        'notification_sound'), // Ensure you have a sound file named 'notification_sound.mp3' in the 'res/raw' directory
   );
 
   await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 }
 
 Future<void> main() async {
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details); // Log the error
+    // Send error report to a server if needed
+    print(details.exception);
+  };
+
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await Firebase.initializeApp(
@@ -120,13 +136,18 @@ Future<void> main() async {
   await setupNotificationChannel();
   final prefs = await SharedPreferences.getInstance();
   final notificationsJson = prefs.getStringList('notifications') ?? [];
-  List<NotificationModel> notifications = notificationsJson.map((json) => NotificationModel.fromJson(jsonDecode(json))).toList();
+  List<NotificationModel> notifications = notificationsJson
+      .map((json) => NotificationModel.fromJson(jsonDecode(json)))
+      .toList();
 
   // Initialize local notification
-  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-  const DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings();
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+  const DarwinInitializationSettings initializationSettingsIOS =
+      DarwinInitializationSettings();
 
-  final InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid,iOS: initializationSettingsIOS);
+  final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onDidReceiveNotificationResponse: (NotificationResponse response) async {
@@ -167,42 +188,45 @@ Future<void> main() async {
   //     ),
   //   ),
   // );
-
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) {
-            final provider = NotificationProvider();
-            provider.setNotifications(notifications);
-            return provider;
+  runZonedGuarded(() {
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) {
+              final provider = NotificationProvider();
+              provider.setNotifications(notifications);
+              return provider;
+            },
+          ),
+          ChangeNotifierProvider(
+            create: (_) {
+              final connectorProvider = ConnectorProvider();
+              connectorProvider
+                  .getDropDownConnectorData(); // Fetch data on app start
+              return connectorProvider;
+            },
+          ),
+          // ChangeNotifierProvider(
+          //   create: (_) {
+          //     final connectorProvider = ConnectorProvider();
+          //     connectorProvider.getDropDownDSAData();  // Fetch data on app start
+          //     return connectorProvider;
+          //   },
+          // ),
+        ],
+        child: Builder(
+          builder: (context) {
+            setupFirebaseMessaging(context);
+            return MyApp();
           },
         ),
-        ChangeNotifierProvider(
-          create: (_) {
-            final connectorProvider = ConnectorProvider();
-            connectorProvider.getDropDownConnectorData();  // Fetch data on app start
-            return connectorProvider;
-          },
-        ),
-        // ChangeNotifierProvider(
-        //   create: (_) {
-        //     final connectorProvider = ConnectorProvider();
-        //     connectorProvider.getDropDownDSAData();  // Fetch data on app start
-        //     return connectorProvider;
-        //   },
-        // ),
-      ],
-      child: Builder(
-        builder: (context) {
-          setupFirebaseMessaging(context);
-          return MyApp();
-        },
       ),
-    ),
-  );
-
-
+    );
+  }, (error, stackTrace) {
+    print('Caught a Dart error: $error');
+    print('Stack trace: $stackTrace');
+  });
   // runApp(DevicePreview(
   //   enabled: !kReleaseMode,
   //   builder: (context) =>  MultiProvider(
@@ -229,7 +253,8 @@ Future<void> main() async {
   // FirebaseDynamicLinks.instance.onLink;
 
   // Handle initial dynamic link
-  final PendingDynamicLinkData? initialLink = await FirebaseDynamicLinks.instance.getInitialLink();
+  final PendingDynamicLinkData? initialLink =
+      await FirebaseDynamicLinks.instance.getInitialLink();
   final Uri? deepLink = initialLink?.link;
   if (deepLink != null) {
     handleDeepLink(deepLink);
@@ -240,7 +265,8 @@ void handleNotificationClick(Map<String, dynamic> data) {
   final screen = data['screen'];
   if (screen != null) {
     if (screen == 'NotificationPageView') {
-      navigatorKey.currentState?.push(MaterialPageRoute(builder: (_) => NotificationPageView()));
+      navigatorKey.currentState
+          ?.push(MaterialPageRoute(builder: (_) => NotificationPageView()));
     }
   }
 }
@@ -249,20 +275,21 @@ void handleDeepLink(Uri uri) {
   final screen = uri.queryParameters['screen'];
   if (screen != null) {
     if (screen == 'NotificationPageView') {
-      navigatorKey.currentState?.push(MaterialPageRoute(builder: (_) => NotificationPageView()));
+      navigatorKey.currentState
+          ?.push(MaterialPageRoute(builder: (_) => NotificationPageView()));
     }
   }
 }
 
-
 class MyApp extends StatelessWidget {
-  MyApp({Key? key,}) : super(key: key);
+  MyApp({
+    Key? key,
+  }) : super(key: key);
 
   FirebaseMessaging _fcm = FirebaseMessaging.instance;
   String? FCMToken;
 
   Future<void> initialize() async {
-
     await _fcm.requestPermission();
     FCMToken = await _fcm.getToken();
     print('Token : $FCMToken');
@@ -281,9 +308,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home:
-  SplashView(Token: FCMToken.toString()),
-  //  SaveData(),
+      home: 
+      SplashView(Token: FCMToken.toString()),
+      //SaveData(),
     );
   }
 }

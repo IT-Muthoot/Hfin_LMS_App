@@ -182,6 +182,7 @@ class _NewLeadPageViewState extends State<NewLeadPageView> {
   final List<DropDownData> _salutationList = [];
 
   getDropDownSalutationData() {
+    print("salutation ---");
     FirebaseFirestore.instance
         .collection("salutation")
         .doc('salutation')

@@ -27,7 +27,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
   List<DocumentSnapshot> ListOfUsers = [];
   var userType;
   String? email;
-  bool isEmailExist= false;
+  bool isEmailExist = false;
 
   void getUserData() async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
@@ -61,7 +61,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
 
   void checkIfEmailExists() {
     // Check if entered email is present in the list
-    bool emailExists = ListOfUsers.any((user) => user['email'] == emailController.text);
+    bool emailExists =
+        ListOfUsers.any((user) => user['email'] == emailController.text);
 
     if (emailExists) {
       setState(() {
@@ -76,7 +77,6 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
       print("Email does not exist!");
     }
   }
-
 
   @override
   void initState() {
@@ -100,23 +100,24 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                 child: Row(
                   children: [
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         // SimpleHiddenDrawerController.of(context).open();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                LoginScreen(Token: '',),
+                            builder: (context) => LoginScreen(
+                              Token: '',
+                            ),
                           ),
                         );
-
                       },
-                      child:  Container(
+                      child: Container(
                         child: Image.asset(
                           'assets/images/arrow.png',
                           color: StyleData.appBarColor2,
                         ),
-                      ),),
+                      ),
+                    ),
                     Container(
                       alignment: Alignment.centerLeft,
                       padding: EdgeInsets.symmetric(horizontal: 40),
@@ -125,15 +126,16 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: StyleData.buttonColor,
-                            fontSize: 30
-                        ),
+                            fontSize: 30),
                         textAlign: TextAlign.left,
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: height * 0.02,),
+              SizedBox(
+                height: height * 0.02,
+              ),
               Form(
                 key: passwordformKey,
                 child: Column(
@@ -169,14 +171,16 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                           child: Text(
                             "Verify",
                             textAlign: TextAlign.center,
-
-                            style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green,fontSize: 16),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                                fontSize: 16),
                           ),
                         ),
                       ),
                     ),
                     Visibility(
-                      visible:isEmailExist == true ,
+                      visible: isEmailExist == true,
                       child: Container(
                         alignment: Alignment.center,
                         margin: EdgeInsets.symmetric(horizontal: 40),
@@ -186,7 +190,9 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                             labelText: "Password *",
                             suffixIcon: IconButton(
                               icon: Icon(
-                                isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                isPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                                 color: Colors.black54,
                               ),
                               onPressed: () {
@@ -208,7 +214,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                       ),
                     ),
                     Visibility(
-                      visible:isEmailExist == true ,
+                      visible: isEmailExist == true,
                       child: Container(
                         alignment: Alignment.center,
                         margin: EdgeInsets.symmetric(horizontal: 40),
@@ -218,13 +224,16 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                             labelText: "Confirm Password *",
                             suffixIcon: IconButton(
                               icon: Icon(
-                                isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                isConfirmPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                                 color: Colors.black54,
                               ),
                               onPressed: () {
                                 // Toggle the password visibility
                                 setState(() {
-                                  isConfirmPasswordVisible = !isConfirmPasswordVisible;
+                                  isConfirmPasswordVisible =
+                                      !isConfirmPasswordVisible;
                                 });
                               },
                             ),
@@ -245,16 +254,17 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   ],
                 ),
               ),
-              SizedBox(height:height * 0.05),
+              SizedBox(height: height * 0.05),
               Visibility(
                 visible: isEmailExist == true,
                 child: GestureDetector(
                   onTap: () async {
                     print("Helloo");
                     if (passwordformKey.currentState!.validate() &&
-                        passwordController.text == confirmpasswordController.text) {
+                        passwordController.text ==
+                            confirmpasswordController.text) {
                       CollectionReference users =
-                      FirebaseFirestore.instance.collection("users");
+                          FirebaseFirestore.instance.collection("users");
                       DateTime now = DateTime.now();
                       print("Hello");
                       try {
@@ -269,15 +279,21 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                             .then((querySnapshot) {
                           if (querySnapshot.docs.isNotEmpty) {
                             print(querySnapshot.docs.isNotEmpty);
-                            users.doc(querySnapshot.docs.first.id).update(params).then((value) {
-                              customSuccessSnackBar1("Password Reset successfully");
+                            users
+                                .doc(querySnapshot.docs.first.id)
+                                .update(params)
+                                .then((value) {
+                              customSuccessSnackBar1(
+                                  "Password Reset successfully");
                               print("Data updated to Visits successfully");
 
                               // Navigate to LoginScreen after successful update
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => LoginScreen(Token: '',),
+                                  builder: (context) => LoginScreen(
+                                    Token: '',
+                                  ),
                                 ),
                               );
                             }).catchError((error) {
@@ -295,10 +311,10 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                       }
                     } else {
                       // Show a snackbar or handle the case where passwords don't match
-                      customSuccessSnackBar("Password & Confirm password don't match");
+                      customSuccessSnackBar(
+                          "Password & Confirm password don't match");
                     }
                   },
-
                   child: Container(
                     alignment: Alignment.centerRight,
                     margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
@@ -308,21 +324,16 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                       width: width * 0.5,
                       decoration: new BoxDecoration(
                           borderRadius: BorderRadius.circular(80.0),
-                          gradient: new LinearGradient(
-                              colors: [
-                                //       Color.fromARGB(255, 255, 136, 34),
-                                Color.fromARGB(255, 236, 139, 34),
-                                Color.fromARGB(255, 255, 177, 41)
-                              ]
-                          )
-                      ),
+                          gradient: new LinearGradient(colors: [
+                            //       Color.fromARGB(255, 255, 136, 34),
+                            Color.fromARGB(255, 236, 139, 34),
+                            Color.fromARGB(255, 255, 177, 41)
+                          ])),
                       padding: const EdgeInsets.all(0),
                       child: Text(
                         "Reset",
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -334,6 +345,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
       ),
     );
   }
+
   void customSuccessSnackBar1(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -345,38 +357,35 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
         ),
         content: Container(
 
-          // margin: const EdgeInsets.only(left: 10),
-          // decoration: BoxDecoration(
-          //   border: Border.all(color: Colors.white)
-          // ),
+            // margin: const EdgeInsets.only(left: 10),
+            // decoration: BoxDecoration(
+            //   border: Border.all(color: Colors.white)
+            // ),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Container(
-                    height: 40,
-                    width: 27,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white)
-                    ),
-                    child: const Icon(
-                      Icons.done_outline,
-                      size: 20,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  SizedBox(
-                      width: 230,
-                      child: Text(msg)),
-                  const SizedBox(
-                    width: 10,
-                  ),
+              Container(
+                height: 40,
+                width: 27,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white)),
+                child: const Icon(
+                  Icons.done_outline,
+                  size: 20,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              SizedBox(width: 230, child: Text(msg)),
+              const SizedBox(
+                width: 10,
+              ),
 
-                  // Icon(Icons.done,color: Colors.white,)
-                ])),
+              // Icon(Icons.done,color: Colors.white,)
+            ])),
         duration: const Duration(seconds: 2),
         // width:MediaQuery.of(context).size. width * 0.9, // Width of the SnackBar.
         // padding: const EdgeInsets.symmetric(
@@ -391,6 +400,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
       ),
     );
   }
+
   void customSuccessSnackBar(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -402,38 +412,35 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
         ),
         content: Container(
 
-          // margin: const EdgeInsets.only(left: 10),
-          // decoration: BoxDecoration(
-          //   border: Border.all(color: Colors.white)
-          // ),
+            // margin: const EdgeInsets.only(left: 10),
+            // decoration: BoxDecoration(
+            //   border: Border.all(color: Colors.white)
+            // ),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Container(
-                    height: 40,
-                    width: 27,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white)
-                    ),
-                    child: const Icon(
-                      Icons.error_rounded,
-                      size: 20,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  SizedBox(
-                      width: 230,
-                      child: Text(msg)),
-                  const SizedBox(
-                    width: 10,
-                  ),
+              Container(
+                height: 40,
+                width: 27,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white)),
+                child: const Icon(
+                  Icons.error_rounded,
+                  size: 20,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              SizedBox(width: 230, child: Text(msg)),
+              const SizedBox(
+                width: 10,
+              ),
 
-                  // Icon(Icons.done,color: Colors.white,)
-                ])),
+              // Icon(Icons.done,color: Colors.white,)
+            ])),
         duration: const Duration(seconds: 2),
         // width:MediaQuery.of(context).size. width * 0.9, // Width of the SnackBar.
         // padding: const EdgeInsets.symmetric(

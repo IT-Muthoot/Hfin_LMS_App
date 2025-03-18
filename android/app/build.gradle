@@ -23,7 +23,9 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('C:/Users/ITHUBBLR-SYSL-36/StudioProjects/Lead_Management_System/android/key.properties')
+def keystorePropertiesFile = rootProject.file('C:/Users/ITHUBBLR-SYSL-35/StudioProjects/Hfin_LMS_App/key.properties')
+// C:\Users\ITHUBBLR-SYSL-35\StudioProjects\Hfin_LMS_App\key.properties
+
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
@@ -57,14 +59,15 @@ android {
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 23
         targetSdkVersion 34
-        versionCode 9
-        versionName '1.0.10'
+        versionCode 14
+        versionName '1.0.13'
     }
 
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
+            // storeFile keystoreProperties['storeFile']
             storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
             storePassword keystoreProperties['storePassword']
         }
@@ -72,9 +75,9 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-//            shrinkResources true
-//            minifyEnabled true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        //    shrinkResources true
+        //    minifyEnabled true
+        //    proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }

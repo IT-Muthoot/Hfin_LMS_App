@@ -253,9 +253,9 @@ class _DashboardPageViewState extends State<DashboardPageView> {
           .doc('dsaName')
           .get();
 
-      List<DropDownData> tempList = [];
+      List<DropDownStringData> tempList = [];
       for (var element in document.data()!['dsaName']) {
-        tempList.add(DropDownData(int.parse(element['id']), element['title']));
+        tempList.add(DropDownStringData(element['id'], element['title']));
       }
 
       setState(() {
@@ -275,9 +275,9 @@ class _DashboardPageViewState extends State<DashboardPageView> {
           .doc('connectorName')
           .get();
 
-      List<DropDownData> tempList = [];
+      List<DropDownStringData> tempList = [];
       for (var element in document.data()!['connectorName']) {
-        tempList.add(DropDownData(int.parse(element['id']), element['title']));
+        tempList.add(DropDownStringData(element['id'], element['title']));
       }
 
       setState(() {

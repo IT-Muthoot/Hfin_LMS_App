@@ -28,15 +28,16 @@ import '../Utils/StyleData.dart';
 import 'VisitPageView.dart';
 import 'package:path/path.dart' as path;
 
-
-final List<DropDownData> leadDSAList = [];
-final List<DropDownData> leadConnectorList = [];
+final List<DropDownStringData> leadDSAList = [];
+final List<DropDownStringData> leadConnectorList = [];
 final List<DropDownData> leadCampaignList = [];
 final List<DropDownData> salList = [];
+
 class FormPageView extends StatefulWidget {
   // String? accessToken;
-  FormPageView({Key? key,
-  //  this.accessToken
+  FormPageView({
+    Key? key,
+    //  this.accessToken
   }) : super(key: key);
   @override
   _FormPageViewState createState() => _FormPageViewState();
@@ -56,7 +57,6 @@ class _FormPageViewState extends State<FormPageView> {
   bool isLeadSourceSelected = false;
 
   String? globalImageUrl;
-
 
   //Textfields
   TextEditingController textEditingController = TextEditingController();
@@ -83,12 +83,10 @@ class _FormPageViewState extends State<FormPageView> {
 
   UnderlineInputBorder enb = UnderlineInputBorder(
       borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: Colors.black38)
-  );
+      borderSide: const BorderSide(color: Colors.black38));
   UnderlineInputBorder focus = UnderlineInputBorder(
       borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: Color(0xff298b28))
-  );
+      borderSide: const BorderSide(color: Color(0xff298b28)));
 
   File? startimage;
   File? startimage1;
@@ -96,7 +94,6 @@ class _FormPageViewState extends State<FormPageView> {
   String? currentAddress;
   bool _isVisible = false;
   CameraController? _controller;
-
 
   List<DocumentSnapshot> ListOfLeads = [];
   List outputList1 = [];
@@ -122,20 +119,18 @@ class _FormPageViewState extends State<FormPageView> {
   String? _selectedLeadSource;
 
   // final List<DropDownData> _leadSourceList = [];
-  final List<DropDownData> _leadDSAList = [];
-
+  final List<DropDownStringData> _leadDSAList = [];
 
   final List<Map<String, dynamic>> _leadSourceList = [
     {"title": "DSA", "id": 1},
     {"title": "Connector", "id": 2},
     {"title": "Marketing Campaign", "id": 3},
-    {"title": "Employee Referral", "id": 4},
-    {"title": "Builder", "id": 5},
-    {"title": "Customer Referral", "id": 6},
+    // {"title": "Employee Referral", "id": 4},
+    // {"title": "Builder", "id": 5},
+    // {"title": "Customer Referral", "id": 6},
     {"title": "Direct Sourcing", "id": 7},
     {"title": "Cross-Sell", "id": 8},
   ];
-
 
   // getDropDownConnectorData() {
   //   FirebaseFirestore.instance
@@ -198,9 +193,9 @@ class _FormPageViewState extends State<FormPageView> {
         .doc('dsaName')
         .get();
 
-    List<DropDownData> tempList = [];
+    List<DropDownStringData> tempList = [];
     for (var element in document.data()!['dsaName']) {
-      tempList.add(DropDownData(int.parse(element['id']), element['title']));
+      tempList.add(DropDownStringData(element['id'], element['title']));
     }
 
     setState(() {
@@ -208,7 +203,6 @@ class _FormPageViewState extends State<FormPageView> {
       _leadDSAList.addAll(tempList); // Add new items to the existing list
     });
   }
-
 
   String? _selectedDSA;
   String? selectedDSACode;
@@ -243,8 +237,7 @@ class _FormPageViewState extends State<FormPageView> {
         .then((value) {
       for (var element in value.data()!['salutation']) {
         setState(() {
-          _salutationList
-              .add(DropDownData(element['id'], element['title']));
+          _salutationList.add(DropDownData(element['id'], element['title']));
         });
       }
     });
@@ -267,7 +260,6 @@ class _FormPageViewState extends State<FormPageView> {
 
   String? visitID;
   String? accesstoken;
-
 
   //visit creation
   Future<String?> visitCreation() async {
@@ -292,7 +284,8 @@ class _FormPageViewState extends State<FormPageView> {
       'Authorization': 'Bearer ${prefs.getString('access_token') ?? ''}',
       //  'Authorization':  'Bearer 00DBl000000BtkL!AQEAQFmo5RMkh7ViBWHS35EPX9gPCPYVCDKI08CBXrvmvPpbYgknhcxYlJML6Dl1ZJg5N0uOCZJy4OH_9OVq7mT6tvQF9UBf',
       'Content-Type': 'application/json',
-      'Cookie': 'BrowserId=qnhrXMyBEe6lOh9ncfvoTw; CookieConsentPolicy=0:1; LSKey-c\$CookieConsentPolicy=0:1'
+      'Cookie':
+          'BrowserId=qnhrXMyBEe6lOh9ncfvoTw; CookieConsentPolicy=0:1; LSKey-c\$CookieConsentPolicy=0:1'
     };
     print("Printing Token 1");
     var data = json.encode({
@@ -304,15 +297,15 @@ class _FormPageViewState extends State<FormPageView> {
       "ScheduledVisit": _dateController.text,
       // "Latitude": latitude.toString(),
       // "Longitude": longitude.toString(),
-      "Latitude": (latitude
-          ?.toString()
-          ?.isNotEmpty == true ? latitude.toString() : "19.024651"),
-      "Longitude": (longitude
-          ?.toString()
-          ?.isNotEmpty == true ? longitude.toString() : "72.8447167"),
+      "Latitude": (latitude?.toString()?.isNotEmpty == true
+          ? latitude.toString()
+          : "19.024651"),
+      "Longitude": (longitude?.toString()?.isNotEmpty == true
+          ? longitude.toString()
+          : "72.8447167"),
     });
     print(data);
-    var dio = Dio();
+    var dio = Dio(); // TODOS
     var response = await dio.request(
       ApiUrls().visitCreationProduction,
       // ApiUrls().visitCreationUAT,
@@ -327,7 +320,6 @@ class _FormPageViewState extends State<FormPageView> {
       print("Printing Token 2");
       print(json.encode(response.data));
 
-
       String jsonResponse = response.data;
       Map<String, dynamic> decodedResponse = json.decode(jsonResponse);
       String visitIdResponse = decodedResponse['visitId'];
@@ -341,8 +333,7 @@ class _FormPageViewState extends State<FormPageView> {
       addDataToFirestore();
 
       // _showAlertDialogSuccess(context);
-    }
-    else {
+    } else {
       Navigator.pop(context);
       print("Nhuhujnj");
       print(response.statusMessage);
@@ -454,7 +445,6 @@ class _FormPageViewState extends State<FormPageView> {
     }
   }
 
-
   //Function to check is all the fields are filled
   void checkCustomerFieldsFilled() {
     if (_selectedSalutation != null &&
@@ -473,8 +463,10 @@ class _FormPageViewState extends State<FormPageView> {
 
   void checkAddressFieldsFilled() {
     if (_addressLine1.text.isNotEmpty &&
-        _addressLine2.text.isNotEmpty && _addressLine3.text.isNotEmpty &&
-        _city.text.isNotEmpty && _pincode.text.isNotEmpty) {
+        _addressLine2.text.isNotEmpty &&
+        _addressLine3.text.isNotEmpty &&
+        _city.text.isNotEmpty &&
+        _pincode.text.isNotEmpty) {
       setState(() {
         areAddressFieldsFilled = true;
       });
@@ -486,8 +478,7 @@ class _FormPageViewState extends State<FormPageView> {
   }
 
   void checkOtherFieldsFilled() {
-    if (selectedPurpose != null &&
-        selectedCustomerStatus != null) {
+    if (selectedPurpose != null && selectedCustomerStatus != null) {
       setState(() {
         areOtherFieldsFilled = true;
       });
@@ -497,7 +488,6 @@ class _FormPageViewState extends State<FormPageView> {
       });
     }
   }
-
 
 //fetching the visits details from leadcreation collection
 //   void fetchLeads() async {
@@ -515,8 +505,8 @@ class _FormPageViewState extends State<FormPageView> {
 
   Future<void> fetchLeads() async {
     try {
-      CollectionReference users = FirebaseFirestore.instance.collection(
-          'LeadCreation');
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('LeadCreation');
       QuerySnapshot querySnapshot = await users.get();
 
       setState(() {
@@ -530,7 +520,6 @@ class _FormPageViewState extends State<FormPageView> {
       print("Failed to fetch leads: $e");
     }
   }
-
 
   bool isCustomerMobileExist = false;
 
@@ -554,10 +543,9 @@ class _FormPageViewState extends State<FormPageView> {
     }
   }
 
-
   // adding visit data to the lead creation collection
-  CollectionReference leadsCreation = FirebaseFirestore.instance.collection(
-      "LeadCreation");
+  CollectionReference leadsCreation =
+      FirebaseFirestore.instance.collection("LeadCreation");
 
   Future<void> addDataToFirestore() async {
     // Upload image to Firebase Storage
@@ -576,11 +564,9 @@ class _FormPageViewState extends State<FormPageView> {
         );
       },
     );
-    SharedPreferences pref =
-    await SharedPreferences.getInstance();
+    SharedPreferences pref = await SharedPreferences.getInstance();
     var userId = pref.getString("userID");
     DateTime now = DateTime.now();
-
 
     print("Hello");
     Map<String, dynamic> params = {
@@ -605,19 +591,20 @@ class _FormPageViewState extends State<FormPageView> {
       'DSAConnectorCode': _selectedLeadSource == 'DSA'
           ? selectedDSACode1
           : _selectedLeadSource == 'Connector'
-          ? ConnectorCode1
-          : _selectedLeadSource == 'Employee Referral'
-          ? _employeeCode.text
-          : _selectedLeadSource == 'Customer Referral' ? _customerMobileNumber
-          .text : "",
+              ? ConnectorCode1
+              : _selectedLeadSource == 'Employee Referral'
+                  ? _employeeCode.text
+                  : _selectedLeadSource == 'Customer Referral'
+                      ? _customerMobileNumber.text
+                      : "",
       'referralEmpCode': _employeeCode.text,
       'referralEmpName': _employeeName.text,
-      'latitude': (latitude
-          ?.toString()
-          ?.isNotEmpty == true ? latitude.toString() : "19.024651"),
-      'longitude': (longitude
-          ?.toString()
-          ?.isNotEmpty == true ? longitude.toString() : "72.8447167"),
+      'latitude': (latitude?.toString()?.isNotEmpty == true
+          ? latitude.toString()
+          : "19.024651"),
+      'longitude': (longitude?.toString()?.isNotEmpty == true
+          ? longitude.toString()
+          : "72.8447167"),
       'address': locationController.text,
       'LeadID': "-",
       'visitID': visitID,
@@ -644,10 +631,9 @@ class _FormPageViewState extends State<FormPageView> {
       _showAlertDialogSuccess(context);
     }).catchError((error) {
       print("Failed to add data: $error");
-      // Handle error if needed
+      Navigator.pop(context);
     });
   }
-
 
 //fetching the location infomation
   TextEditingController locationController = TextEditingController();
@@ -661,16 +647,15 @@ class _FormPageViewState extends State<FormPageView> {
           forceAndroidLocationManager: true,
           desiredAccuracy: LocationAccuracy.lowest);
 
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-          position.latitude, position.longitude);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
 
       if (placemarks != null && placemarks.isNotEmpty) {
         Placemark firstPlacemark = placemarks.first;
-        String address = "${firstPlacemark.subThoroughfare} ${firstPlacemark
-            .thoroughfare}, "
+        String address =
+            "${firstPlacemark.subThoroughfare} ${firstPlacemark.thoroughfare}, "
             "${firstPlacemark.subLocality}, ${firstPlacemark.locality}, "
-            "${firstPlacemark.administrativeArea} ${firstPlacemark
-            .postalCode}, "
+            "${firstPlacemark.administrativeArea} ${firstPlacemark.postalCode}, "
             "${firstPlacemark.country}";
 
         setState(() {
@@ -690,63 +675,66 @@ class _FormPageViewState extends State<FormPageView> {
   }
 
   void requestLocationPermission() async {
-    try{
-    var status = await Permission.location.request();
-    if (status == PermissionStatus.granted) {
-      getLocation();
-    } else {
-      print("Location permission denied");
+    try {
+      var status = await Permission.location.request();
+      if (status == PermissionStatus.granted) {
+        getLocation();
+      } else {
+        print("Location permission denied");
+      }
+    } catch (err) {
+      print(err);
     }
-  }catch(err){
-    print(err);
-  }}
-  List<String> stateValues = [];
-  List<String> districts  = [];
-  List<String> postOffice  = [];
-
-
-Future<void> getToken()
-async {
-  var headers = {
-    'X-PrettyPrint': '1',
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'Cookie': 'BrowserId=qnhrXMyBEe6lOh9ncfvoTw; CookieConsentPolicy=0:1; LSKey-c\$CookieConsentPolicy=0:1'
-  };
-  var data = {
-    'grant_type': 'password',
-    'client_id': ApiUrls().clientIdProduction,
-    'client_secret': ApiUrls().clientSecretProduction,
-    'username': ApiUrls().userNameProduction,
-    'password': ApiUrls().passwordProduction
-    // 'grant_type': 'password',
-    // 'client_id': '3MVG9ct5lb5FGJTNKeeA63nutsPt.67SWB9mzXh9na.RBlkmz2FxM4KH31kKmHWMWQHD1y2apE9qmtoRtiQ9R',
-    // 'client_secret': 'E9DDAF90143A7B4C6CA622463EFDA17843174AB347FD74A6905F853CD2406BDE',
-    // 'username': 'itkrishnaprasad@muthootgroup.com.dev2',
-    // 'password': 'Karthikrishna@127jb7htnfs8WigpiW5SOP6I7qZ'
-  };
-  var dio = Dio();
-  var response = await dio.request(
-    ApiUrls().accessTokenProduction,
-    options: Options(
-      method: 'POST',
-      headers: headers,
-    ),
-    data: data,
-  );
-
-  String? accessToken;
-  if (response.statusCode == 200) {
-
-    String jsonResponse = json.encode(response.data);
-    Map<String, dynamic> jsonMap = json.decode(jsonResponse);
-    accessToken = jsonMap['access_token'];
-
-    // Store the access token locally
-    saveAccessToken(accessToken!);
-    print("AccessToken");
-    print(accessToken);
   }
-}
+
+  List<String> stateValues = [];
+  List<String> districts = [];
+  List<String> postOffice = [];
+
+  Future<void> getToken() async {
+    var headers = {
+      'X-PrettyPrint': '1',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Cookie':
+          'BrowserId=qnhrXMyBEe6lOh9ncfvoTw; CookieConsentPolicy=0:1; LSKey-c\$CookieConsentPolicy=0:1'
+    };
+    var data = {
+      'grant_type': 'password',
+      'client_id': ApiUrls().clientIdProduction,
+      'client_secret': ApiUrls().clientSecretProduction,
+      'username': ApiUrls().userNameProduction,
+      'password': ApiUrls().passwordProduction
+      // 'grant_type': 'password',
+      // 'client_id':
+      //     '3MVG9u0ll7_j5qFxuFGIYQ4WguPM0jYjSJXprZRrAAOaI8q0BVKqxCt1dzjQ0tti3JDqnTeGjj1Dk7v9.QwnQ',
+      // 'client_secret':
+      //     'ED297E5AD800E43B413260D0C4C7CFA7F49D11CE440F2EBC88220064B32D51CD',
+      // 'username': 'itkrishnaprasad@muthootgroup.com',
+      // 'password': 'Muthoot@123yhvmSWG1rJpPkDhbPu3SBg5Y'
+    };
+    var dio = Dio();
+    var response = await dio.request(
+      ApiUrls().accessTokenProduction,
+      options: Options(
+        method: 'POST',
+        headers: headers,
+      ),
+      data: data,
+    );
+
+    String? accessToken;
+    if (response.statusCode == 200) {
+      String jsonResponse = json.encode(response.data);
+      Map<String, dynamic> jsonMap = json.decode(jsonResponse);
+      accessToken = jsonMap['access_token'];
+
+      // Store the access token locally
+      saveAccessToken(accessToken!);
+      print("AccessToken");
+      print(accessToken);
+    }
+  }
+
   Future<void> saveAccessToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('access_token', token);
@@ -762,25 +750,24 @@ async {
   //   });
   // }
 
-
   getDropDownConnectorData() async {
-    if(leadConnectorList.isEmpty){
+    if (leadConnectorList.isEmpty) {
       var document = await FirebaseFirestore.instance
           .collection("connectorName")
           .doc('connectorName')
           .get();
 
-      List<DropDownData> tempList = [];
+      List<DropDownStringData> tempList = [];
       for (var element in document.data()!['connectorName']) {
-        tempList.add(DropDownData(int.parse(element['id']), element['title']));
+        tempList.add(DropDownStringData(element['id'], element['title']));
       }
 
       setState(() {
         leadConnectorList.clear(); // Clear the existing list
-        leadConnectorList.addAll(tempList); // Add new items to the existing list
+        leadConnectorList
+            .addAll(tempList); // Add new items to the existing list
       });
     }
-
   }
 
   // getDropDownDSAData() async {
@@ -803,7 +790,6 @@ async {
   //
   // }
 
-
   Future<void> _fetchData() async {
     // List<DropDownData> data = await getDropDownDSAData();
     // setState(() {
@@ -812,57 +798,49 @@ async {
     //   _leadDSAList.addAll(data);
     // });
 
-    try{
+    try {
       var document = await FirebaseFirestore.instance
           .collection("dsaName")
           .doc('dsaName')
           .get();
 
-      List<DropDownData> tempList = [];
+      List<DropDownStringData> tempList = [];
       for (var element in document.data()!['dsaName']) {
-        tempList.add(DropDownData(int.parse(element['id']), element['title']));
+        tempList.add(DropDownStringData(element['id'], element['title']));
       }
       print("DATA ----");
       setState(() {
         leadDSAList.clear(); // Clear the existing list
         leadDSAList.addAll(tempList); // Add new items to the existing list
       });
-    }catch(e){
+    } catch (e) {
       print(e);
-
     }
   }
 
-@override
+  @override
   void initState() {
     // TODO: implement initState
-  //getDropDownDSAData();
-  _fetchData();
- // _fetchConnectorData();
-  getDropDownSalutationData();
-  getDropDownCampaignData();
-  getToken();
-    fetchLeads();
+    //getDropDownDSAData();
+    _fetchData();
+    // _fetchConnectorData();
+    getDropDownSalutationData();
+    getDropDownCampaignData();
+    getToken();
+    // fetchLeads();
 
- // getDropDownLeadData();
-   // getDropDownLeadData();
-   // getDropDownConnectorData();
-
+    // getDropDownLeadData();
+    // getDropDownLeadData();
+    // getDropDownConnectorData();
 
     super.initState();
-  getLocation();
+    getLocation();
     requestLocationPermission();
-   // getAccessToken();
+    // getAccessToken();
   }
-
-
-
-
-
 
   Map<String, dynamic> docData = {};
   String? currentDateTime;
-
 
 //   Future<void> getStartImage(ImageSource source) async {
 //     bool serviceEnabled;
@@ -952,14 +930,14 @@ async {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ListTile(
-          leading: CircleAvatar(
-            backgroundColor: StyleData.background,
-            child: const Center(
-              child: Icon(Icons.camera, color: Colors.black),
-            ),
-          ),
-            title: const Text("Take Camera",
-                style: TextStyle(color: Colors.white60)),
+                leading: CircleAvatar(
+                  backgroundColor: StyleData.background,
+                  child: const Center(
+                    child: Icon(Icons.camera, color: Colors.black),
+                  ),
+                ),
+                title: const Text("Take Camera",
+                    style: TextStyle(color: Colors.white60)),
                 onTap: () {
                   Navigator.pop(context);
                   getStartImage(ImageSource.camera); // Capture from camera
@@ -1014,7 +992,8 @@ async {
 
     if (permission == LocationPermission.deniedForever) {
       Fluttertoast.showToast(
-          msg: 'Location permissions are permanently denied, we cannot request permissions.');
+          msg:
+              'Location permissions are permanently denied, we cannot request permissions.');
       return;
     }
 
@@ -1025,20 +1004,22 @@ async {
     try {
       // Get the address based on latitude and longitude
       List<Placemark> placemarks =
-      await placemarkFromCoordinates(position.latitude, position.longitude);
+          await placemarkFromCoordinates(position.latitude, position.longitude);
 
       Placemark place = placemarks[0];
       Placemark place1 = placemarks[1];
 
       setState(() {
         currentposition = position;
-        currentDateTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+        currentDateTime =
+            DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
         currentAddress =
-        "${place1.name},${place.street},${place.subLocality},${place1.thoroughfare}, ${place.postalCode},${place.locality},${place1.administrativeArea},${place.country}";
+            "${place1.name},${place.street},${place.subLocality},${place1.thoroughfare}, ${place.postalCode},${place.locality},${place1.administrativeArea},${place.country}";
       });
 
       // Pick an image from the camera or gallery
-      final pickedFile = await ImagePicker().pickImage(source: source, imageQuality: 35);
+      final pickedFile =
+          await ImagePicker().pickImage(source: source, imageQuality: 35);
       if (pickedFile == null) return;
 
       final imageTemporary = File(pickedFile.path);
@@ -1050,7 +1031,8 @@ async {
 
       // Upload the image to Firebase
       String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      Reference storageReference = FirebaseStorage.instance.ref().child('images/$fileName');
+      Reference storageReference =
+          FirebaseStorage.instance.ref().child('images/$fileName');
       UploadTask uploadTask = storageReference.putFile(imageTemporary);
       TaskSnapshot taskSnapshot = await uploadTask;
 
@@ -1062,21 +1044,10 @@ async {
 
       print("Global URL: $globalImageUrl");
       print("Latitude: ${position.latitude}, Longitude: ${position.longitude}");
-
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
     }
   }
-
-
-
-
-
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -1089,7 +1060,9 @@ async {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePageView(Token: '',),
+            builder: (context) => HomePageView(
+              Token: '',
+            ),
           ),
         );
         // Prevent the default back navigation
@@ -1097,31 +1070,37 @@ async {
       },
       child: SafeArea(
         child: Scaffold(
-          appBar:  AppBar(
+          appBar: AppBar(
             backgroundColor: StyleData.appBarColor2,
             leading: Padding(
               padding: const EdgeInsets.all(19.0),
               child: GestureDetector(
-                  onTap: (){
-                    // SimpleHiddenDrawerController.of(context).open();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                         HomePageView(Token: '',),
+                onTap: () {
+                  // SimpleHiddenDrawerController.of(context).open();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomePageView(
+                        Token: '',
                       ),
-                    );
-        
-                  },
-                  child:  Container(
-                    child: Image.asset(
-                      'assets/images/arrow.png',
                     ),
-                  ),),
+                  );
+                },
+                child: Container(
+                  child: Image.asset(
+                    'assets/images/arrow.png',
+                  ),
+                ),
+              ),
             ),
-            title: Text("New Visit",style: TextStyle(color: Colors.white,fontSize: 18,fontFamily: StyleData.boldFont),),
+            title: Text(
+              "New Visit",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontFamily: StyleData.boldFont),
+            ),
             centerTitle: true,
-        
           ),
           body: SafeArea(
             child: Column(
@@ -1151,8 +1130,7 @@ async {
                                 }
                                 return null;
                               },
-                              items: _leadSourceList
-                                  .map((item){
+                              items: _leadSourceList.map((item) {
                                 return DropdownMenuItem<String>(
                                   value: item['title'],
                                   child: Text(
@@ -1214,16 +1192,20 @@ async {
                                     hint: const Text(
                                       'Select option',
                                       style: TextStyle(
-                                        fontSize: 15, // Adjusted font size to match second dropdown
-                                        color: Color(0xFF393939), // Changed text color to match second dropdown
+                                        fontSize:
+                                            15, // Adjusted font size to match second dropdown
+                                        color: Color(
+                                            0xFF393939), // Changed text color to match second dropdown
                                       ),
                                     ),
-                                    items: leadDSAList.map((DropDownData item) {
+                                    items: leadDSAList
+                                        .map((DropDownStringData item) {
                                       return DropdownMenuItem(
                                         value: item.title,
                                         child: Text(
                                           item.title.length > 25
-                                              ? item.title.substring(0, 26) + '.'
+                                              ? item.title.substring(0, 26) +
+                                                  '.'
                                               : item.title,
                                           style: const TextStyle(
                                             color: Color(0xFF393939),
@@ -1238,15 +1220,18 @@ async {
                                     onChanged: (String? newValue) {
                                       setState(() {
                                         _selectedDSA = newValue;
-                                        DropDownData selectedDSAData = leadDSAList.firstWhere(
-                                              (item) => item.title == newValue,
+                                        DropDownStringData selectedDSAData =
+                                            leadDSAList.firstWhere(
+                                          (item) => item.title == newValue,
                                         );
                                         print('DSAID: ${selectedDSAData.id}');
-                                        selectedDSACode = selectedDSAData.id.toString();
+                                        selectedDSACode =
+                                            selectedDSAData.id.toString();
                                       });
                                       setState(() {
                                         selectedDSACode1 = selectedDSACode;
-                                        selectedDSACodeController.text = selectedDSACode!;
+                                        selectedDSACodeController.text =
+                                            selectedDSACode!;
                                       });
                                       print(selectedDSACode1);
                                     },
@@ -1271,11 +1256,15 @@ async {
                                       ),
                                       maxHeight: 200,
                                     ),
-                                    selectedItemBuilder: (BuildContext context) {
-                                      return leadDSAList.map<Widget>((DropDownData item) {
+                                    selectedItemBuilder:
+                                        (BuildContext context) {
+                                      return leadDSAList.map<Widget>(
+                                          (DropDownStringData item) {
                                         return Text(
                                           item.title,
-                                          style: const TextStyle(fontSize: 13, color: Colors.black),
+                                          style: const TextStyle(
+                                              fontSize: 13,
+                                              color: Colors.black),
                                         );
                                       }).toList();
                                     },
@@ -1310,18 +1299,26 @@ async {
                                               fontSize: 13,
                                             ),
                                             focusedBorder: UnderlineInputBorder(
-                                              borderRadius: BorderRadius.circular(10),
-                                              borderSide: const BorderSide(color: Colors.black38),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              borderSide: const BorderSide(
+                                                  color: Colors.black38),
                                             ),
                                             enabledBorder: UnderlineInputBorder(
-                                              borderRadius: BorderRadius.circular(10),
-                                              borderSide: const BorderSide(color: Colors.black38),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              borderSide: const BorderSide(
+                                                  color: Colors.black38),
                                             ),
                                           ),
                                         ),
                                       ),
                                       searchMatchFn: (item, searchValue) {
-                                        return item.value.toString().toLowerCase().contains(searchValue.toLowerCase());
+                                        return item.value
+                                            .toString()
+                                            .toLowerCase()
+                                            .contains(
+                                                searchValue.toLowerCase());
                                       },
                                     ),
                                     onMenuStateChange: (isOpen) {
@@ -1408,7 +1405,7 @@ async {
                                   width: width * 0.95,
                                   child: TextFormField(
                                     controller: selectedDSACodeController,
-                                  //  initialValue: selectedDSACode1,
+                                    //  initialValue: selectedDSACode1,
                                     readOnly: true,
                                     decoration: InputDecoration(
                                       labelText: 'DSA Code',
@@ -1437,17 +1434,20 @@ async {
                                     hint: const Text(
                                       'Select option',
                                       style: TextStyle(
-                                        fontSize: 15, // Adjusted font size to match second dropdown
-                                        color: Color(0xFF393939), // Changed text color to match second dropdown
+                                        fontSize:
+                                            15, // Adjusted font size to match second dropdown
+                                        color: Color(
+                                            0xFF393939), // Changed text color to match second dropdown
                                       ),
                                     ),
                                     items: leadConnectorList
-                                        .map((DropDownData item){
+                                        .map((DropDownStringData item) {
                                       return DropdownMenuItem(
                                         value: item.title,
                                         child: Text(
                                           item.title.length > 30
-                                              ? item.title.substring(0, 29) + '...'
+                                              ? item.title.substring(0, 29) +
+                                                  '...'
                                               : item.title,
                                           style: const TextStyle(
                                             color: Color(0xFF393939),
@@ -1462,17 +1462,21 @@ async {
                                     onChanged: (String? newValue) {
                                       setState(() {
                                         _selectedConnector = newValue;
-                                        DropDownData selectedConnectorData = leadConnectorList.firstWhere(
-                                              (item) => item.title == newValue,
-        
+                                        DropDownStringData
+                                            selectedConnectorData =
+                                            leadConnectorList.firstWhere(
+                                          (item) => item.title == newValue,
                                         );
                                         // Fetch and print the selected title's ID
-                                        print('ConnectorID: ${selectedConnectorData.id}');
-                                        ConnectorCode = selectedConnectorData.id.toString();
+                                        print(
+                                            'ConnectorID: ${selectedConnectorData.id}');
+                                        ConnectorCode =
+                                            selectedConnectorData.id.toString();
                                       });
                                       setState(() {
                                         ConnectorCode1 = ConnectorCode;
-                                        ConnectorCodeController.text = ConnectorCode!;
+                                        ConnectorCodeController.text =
+                                            ConnectorCode!;
                                       });
                                       print(ConnectorCode1);
                                     },
@@ -1505,11 +1509,15 @@ async {
                                       ),
                                       maxHeight: 200,
                                     ),
-                                    selectedItemBuilder: (BuildContext context) {
-                                      return leadConnectorList.map<Widget>((DropDownData item) {
+                                    selectedItemBuilder:
+                                        (BuildContext context) {
+                                      return leadConnectorList.map<Widget>(
+                                          (DropDownStringData item) {
                                         return Text(
                                           item.title,
-                                          style: const TextStyle(fontSize: 14, color: Colors.black),
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black),
                                         );
                                       }).toList();
                                     },
@@ -1538,18 +1546,26 @@ async {
                                               fontSize: 13,
                                             ),
                                             focusedBorder: UnderlineInputBorder(
-                                              borderRadius: BorderRadius.circular(10),
-                                              borderSide: const BorderSide(color: Colors.black38),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              borderSide: const BorderSide(
+                                                  color: Colors.black38),
                                             ),
                                             enabledBorder: UnderlineInputBorder(
-                                              borderRadius: BorderRadius.circular(10),
-                                              borderSide: const BorderSide(color: Colors.black38),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              borderSide: const BorderSide(
+                                                  color: Colors.black38),
                                             ),
                                           ),
                                         ),
                                       ),
                                       searchMatchFn: (item, searchValue) {
-                                        return item.value.toString().toLowerCase().contains(searchValue.toLowerCase());
+                                        return item.value
+                                            .toString()
+                                            .toLowerCase()
+                                            .contains(
+                                                searchValue.toLowerCase());
                                       },
                                     ),
                                     onMenuStateChange: (isOpen) {
@@ -1650,7 +1666,8 @@ async {
                             ),
                           ),
                           Visibility(
-                            visible: _selectedLeadSource == "Marketing Campaign",
+                            visible:
+                                _selectedLeadSource == "Marketing Campaign",
                             child: Column(
                               children: [
                                 SizedBox(
@@ -1665,7 +1682,7 @@ async {
                                         _selectedCampaign = newValue;
                                       });
                                     },
-                                   // focusNode: _customerNameFocus,
+                                    // focusNode: _customerNameFocus,
                                     validator: (value) {
                                       if (value!.isEmpty) {
                                         return 'Select campaign name';
@@ -1673,12 +1690,13 @@ async {
                                       return null;
                                     },
                                     items: leadCampaignList
-                                        .map((DropDownData item){
+                                        .map((DropDownData item) {
                                       return DropdownMenuItem(
                                         value: item.title,
                                         child: Text(
                                           item.title.length > 33
-                                              ? item.title.substring(0, 32) + '...'  // adjust the length as needed
+                                              ? item.title.substring(0, 32) +
+                                                  '...' // adjust the length as needed
                                               : item.title,
                                           style: const TextStyle(
                                             color: Color(0xFF393939),
@@ -1689,14 +1707,13 @@ async {
                                         ),
                                       );
                                     }).toList(),
-                                    dropdownStyleData:DropdownStyleData(
+                                    dropdownStyleData: DropdownStyleData(
                                       decoration: BoxDecoration(
-                                        //     color: StyleData.buttonColor,
-                                          borderRadius: BorderRadius.circular(10)
-        
-                                      ),
+                                          //     color: StyleData.buttonColor,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
                                       maxHeight: 200,
-                                    ) ,
+                                    ),
                                     style: const TextStyle(
                                       color: Color(0xFF393939),
                                       fontSize: 15,
@@ -1767,7 +1784,7 @@ async {
                                       FilteringTextInputFormatter.digitsOnly,
                                       LengthLimitingTextInputFormatter(10),
                                     ],
-        
+
                                     decoration: InputDecoration(
                                       labelText: 'Mobile Number',
                                       hintText: '',
@@ -1833,16 +1850,17 @@ async {
                                     //   });
                                     // },
                                     //focusNode: _customerNameFocus,
-                                   //keyboardType: TextInputType.phone,
+                                    //keyboardType: TextInputType.phone,
                                     inputFormatters: [
-                                      FilteringTextInputFormatter.singleLineFormatter,
+                                      FilteringTextInputFormatter
+                                          .singleLineFormatter,
                                       LengthLimitingTextInputFormatter(7),
                                     ],
-        
+
                                     decoration: InputDecoration(
                                       labelText: 'Employee Code',
                                       hintText: '',
-                                     // prefixText: '+91 ',
+                                      // prefixText: '+91 ',
                                       //  prefixIcon: Icon(Icons.person, color: HexColor("#7c8880"),),
                                       focusedBorder: focus,
                                       enabledBorder: enb,
@@ -1949,16 +1967,15 @@ async {
                                   elevation: 3,
                                   child: GestureDetector(
                                     onTap: () {
-                                        setState(() {
-                                          isCustomerInfo = !isCustomerInfo;
-                                          isVisitInfo = false;
+                                      setState(() {
+                                        isCustomerInfo = !isCustomerInfo;
+                                        isVisitInfo = false;
                                         //  isAddressInfo = false;
-                                          isOtherInfo = false;
-                                        });
-        
+                                        isOtherInfo = false;
+                                      });
                                     },
                                     child: Container(
-                                      color: Colors.white,
+                                        color: Colors.white,
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Column(
@@ -1977,210 +1994,289 @@ async {
                                                     SizedBox(
                                                       width: width * 0.05,
                                                     ),
-                                                    Text("Customer Information",style: TextStyle(color: StyleData.appBarColor,fontWeight: FontWeight.bold,fontSize: 16),),
+                                                    Text(
+                                                      "Customer Information",
+                                                      style: TextStyle(
+                                                          color: StyleData
+                                                              .appBarColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16),
+                                                    ),
                                                     Spacer(),
                                                     areCustomerFieldsFilled
-                                                        ? Icon(Icons.check_circle_sharp, color: Colors.green, size: 22,)
-                                                        : Icon(Icons.arrow_drop_down_circle_rounded, color: StyleData.buttonColor, size: 22,)
+                                                        ? Icon(
+                                                            Icons
+                                                                .check_circle_sharp,
+                                                            color: Colors.green,
+                                                            size: 22,
+                                                          )
+                                                        : Icon(
+                                                            Icons
+                                                                .arrow_drop_down_circle_rounded,
+                                                            color: StyleData
+                                                                .buttonColor,
+                                                            size: 22,
+                                                          )
                                                   ],
                                                 ),
                                               ),
                                               // SizedBox(height: height * 0.015),
                                               Visibility(
-                                                visible:  isCustomerInfo == true,
+                                                  visible:
+                                                      isCustomerInfo == true,
                                                   child: Column(
-                                                children: [
-                                                  DropdownButtonFormField2<String>(
-                                                    value: _selectedSalutation,
-                                                    onChanged: (String? newValue) {
-                                                      setState(() {
-                                                        _selectedSalutation = newValue;
-                                                        checkCustomerFieldsFilled();
-                                                      });
-                                                    },
-                                                    validator: (value) {
-                                                      if (value == null || value.isEmpty) {
-                                                        return 'Please select salutation';
-                                                      }
-                                                      return null; // Return null if the value is valid
-                                                    },
-                                                    dropdownStyleData:DropdownStyleData(
-                                                      decoration: BoxDecoration(
-                                                        //     color: StyleData.buttonColor,
-                                                          borderRadius: BorderRadius.circular(10)
-        
+                                                    children: [
+                                                      DropdownButtonFormField2<
+                                                          String>(
+                                                        value:
+                                                            _selectedSalutation,
+                                                        onChanged:
+                                                            (String? newValue) {
+                                                          setState(() {
+                                                            _selectedSalutation =
+                                                                newValue;
+                                                            checkCustomerFieldsFilled();
+                                                          });
+                                                        },
+                                                        validator: (value) {
+                                                          if (value == null ||
+                                                              value.isEmpty) {
+                                                            return 'Please select salutation';
+                                                          }
+                                                          return null; // Return null if the value is valid
+                                                        },
+                                                        dropdownStyleData:
+                                                            DropdownStyleData(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                  //     color: StyleData.buttonColor,
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10)),
+                                                          maxHeight: 200,
+                                                        ),
+                                                        items: salList.map(
+                                                            (DropDownData
+                                                                item) {
+                                                          return DropdownMenuItem(
+                                                            value: item.title,
+                                                            child: Text(
+                                                              item.title,
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: Color(
+                                                                    0xFF393939),
+                                                                fontSize: 15,
+                                                                fontFamily:
+                                                                    'Poppins',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }).toList(),
+                                                        style: const TextStyle(
+                                                          color:
+                                                              Color(0xFF393939),
+                                                          fontSize: 15,
+                                                          fontFamily: 'Poppins',
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                        ),
+                                                        //   hint: const Text('Select an option'),
+                                                        decoration:
+                                                            InputDecoration(
+                                                          labelText:
+                                                              'Salutation *',
+                                                          hintText:
+                                                              'Select an option',
+                                                          //  prefixIcon: Icon(Icons.person, color: HexColor("#7c8880"),),
+                                                          focusedBorder: focus,
+                                                          enabledBorder: enb,
+                                                          filled: true,
+                                                          fillColor: StyleData
+                                                              .textFieldColor,
+                                                        ),
                                                       ),
-                                                      maxHeight: 200,
-                                                    ) ,
-                                                    items: salList
-                                                        .map((DropDownData item){
-                                                      return DropdownMenuItem(
-                                                        value: item.title,
-                                                        child: Text(
-                                                          item.title,
-                                                          style: const TextStyle(
-                                                            color: Color(0xFF393939),
-                                                            fontSize: 15,
-                                                            fontFamily: 'Poppins',
-                                                            fontWeight: FontWeight.w400,
+                                                      TextFormField(
+                                                        controller: firstName,
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            checkCustomerFieldsFilled();
+                                                          });
+                                                        },
+                                                        decoration:
+                                                            InputDecoration(
+                                                          labelText:
+                                                              'First Name *',
+                                                          hintText:
+                                                              'Enter First Name',
+                                                          //  prefixIcon: Icon(Icons.person, color: HexColor("#7c8880"),),
+                                                          focusedBorder: focus,
+                                                          enabledBorder: enb,
+                                                          filled: true,
+                                                          fillColor: StyleData
+                                                              .textFieldColor,
+                                                        ),
+                                                        inputFormatters: [
+                                                          FilteringTextInputFormatter
+                                                              .allow(RegExp(
+                                                                  r'[a-zA-Z]')),
+                                                        ],
+                                                        validator: (value) {
+                                                          if (value == null ||
+                                                              value.isEmpty) {
+                                                            return 'Please enter your first name';
+                                                          }
+                                                          return null;
+                                                        },
+                                                      ),
+                                                      TextFormField(
+                                                        controller: middleName,
+                                                        // onChanged: (value) {
+                                                        //   setState(() {
+                                                        //     checkCustomerFieldsFilled();
+                                                        //   });
+                                                        // },
+                                                        decoration:
+                                                            InputDecoration(
+                                                          labelText:
+                                                              'Middle Name',
+                                                          hintText:
+                                                              'Enter Middle Name',
+                                                          //  prefixIcon: Icon(Icons.person, color: HexColor("#7c8880"),),
+                                                          focusedBorder: focus,
+                                                          enabledBorder: enb,
+                                                          filled: true,
+                                                          fillColor: StyleData
+                                                              .textFieldColor,
+                                                        ),
+                                                        inputFormatters: [
+                                                          FilteringTextInputFormatter
+                                                              .allow(RegExp(
+                                                                  r'[a-zA-Z]')),
+                                                        ],
+                                                        // validator: (value) {
+                                                        //   if (value == null || value.isEmpty) {
+                                                        //     return 'Please enter your first name';
+                                                        //   }
+                                                        //   return null;
+                                                        // },
+                                                      ),
+                                                      TextFormField(
+                                                        controller: lastName,
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            checkCustomerFieldsFilled();
+                                                          });
+                                                        },
+                                                        decoration:
+                                                            InputDecoration(
+                                                          labelText:
+                                                              'Last Name *',
+                                                          hintText:
+                                                              'Enter Last Name',
+                                                          //  prefixIcon: Icon(Icons.person, color: HexColor("#7c8880"),),
+                                                          // border: InputBorder.none,
+                                                          focusedBorder: focus,
+                                                          enabledBorder: enb,
+                                                          filled: true,
+                                                          fillColor: StyleData
+                                                              .textFieldColor,
+                                                        ),
+                                                        inputFormatters: [
+                                                          FilteringTextInputFormatter
+                                                              .allow(RegExp(
+                                                                  r'[a-zA-Z]')),
+                                                        ],
+                                                        validator: (value) {
+                                                          if (value == null ||
+                                                              value.isEmpty) {
+                                                            return 'Please enter your last name';
+                                                          }
+                                                          return null;
+                                                        },
+                                                      ),
+                                                      TextFormField(
+                                                        controller:
+                                                            customerNumber,
+                                                        keyboardType:
+                                                            TextInputType.phone,
+                                                        inputFormatters: [
+                                                          FilteringTextInputFormatter
+                                                              .digitsOnly,
+                                                          LengthLimitingTextInputFormatter(
+                                                              10),
+                                                        ],
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            //   fetchAllCustomerMobile(value);
+                                                            checkCustomerFieldsFilled();
+                                                          });
+                                                        },
+                                                        decoration:
+                                                            InputDecoration(
+                                                          labelText:
+                                                              'Customer Phone *',
+                                                          hintText:
+                                                              'Enter Customer Phone',
+                                                          prefixText:
+                                                              '+91 ', // Add the prefix here
+                                                          // prefixIcon: Icon(Icons.person, color: HexColor("#7c8880"),),
+                                                          // border: InputBorder.none,
+                                                          focusedBorder: focus,
+                                                          enabledBorder: enb,
+                                                          filled: true,
+                                                          fillColor: StyleData
+                                                              .textFieldColor,
+                                                        ),
+                                                        validator: (value) {
+                                                          if (value == null ||
+                                                              value.isEmpty) {
+                                                            return 'Please enter your last name';
+                                                          }
+                                                          return null;
+                                                        },
+                                                      ),
+                                                      SizedBox(
+                                                          height:
+                                                              height * 0.02),
+                                                      Visibility(
+                                                        visible:
+                                                            areCustomerFieldsFilled,
+                                                        child: GestureDetector(
+                                                          onTap: () {
+                                                            if (areCustomerFieldsFilled) {
+                                                              setState(() {
+                                                                isVisitInfo =
+                                                                    !isVisitInfo;
+                                                                isCustomerInfo =
+                                                                    false;
+                                                                //   isAddressInfo = false;
+                                                                isOtherInfo =
+                                                                    false;
+                                                              });
+                                                            }
+                                                          },
+                                                          child: Align(
+                                                            alignment: Alignment
+                                                                .bottomRight,
+                                                            child: Icon(
+                                                              Icons
+                                                                  .arrow_circle_down,
+                                                              color: Colors
+                                                                  .yellow
+                                                                  .shade800, // Set your desired arrow color
+                                                              size: 22,
+                                                            ),
                                                           ),
                                                         ),
-                                                      );
-                                                    }).toList(),
-                                                    style: const TextStyle(
-                                                      color: Color(0xFF393939),
-                                                      fontSize: 15,
-                                                      fontFamily: 'Poppins',
-                                                      fontWeight: FontWeight.w400,
-                                                    ),
-                                                    //   hint: const Text('Select an option'),
-                                                    decoration: InputDecoration(
-                                                      labelText: 'Salutation *',
-                                                      hintText: 'Select an option',
-                                                      //  prefixIcon: Icon(Icons.person, color: HexColor("#7c8880"),),
-                                                      focusedBorder: focus,
-                                                      enabledBorder: enb,
-                                                      filled: true,
-                                                      fillColor: StyleData.textFieldColor,
-                                                    ),
-                                                  ),
-                                                  TextFormField(
-                                                    controller: firstName,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        checkCustomerFieldsFilled();
-                                                      });
-                                                    },
-                                                    decoration: InputDecoration(
-                                                      labelText: 'First Name *',
-                                                      hintText: 'Enter First Name',
-                                                      //  prefixIcon: Icon(Icons.person, color: HexColor("#7c8880"),),
-                                                      focusedBorder: focus,
-                                                      enabledBorder: enb,
-                                                      filled: true,
-                                                      fillColor: StyleData.textFieldColor,
-                                                    ),
-                                                    inputFormatters: [
-                                                      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')),
-                                                    ],
-                                                    validator: (value) {
-                                                      if (value == null || value.isEmpty) {
-                                                        return 'Please enter your first name';
-                                                      }
-                                                      return null;
-                                                    },
-                                                  ),
-                                                  TextFormField(
-                                                    controller: middleName,
-                                                    // onChanged: (value) {
-                                                    //   setState(() {
-                                                    //     checkCustomerFieldsFilled();
-                                                    //   });
-                                                    // },
-                                                    decoration: InputDecoration(
-                                                      labelText: 'Middle Name',
-                                                      hintText: 'Enter Middle Name',
-                                                      //  prefixIcon: Icon(Icons.person, color: HexColor("#7c8880"),),
-                                                      focusedBorder: focus,
-                                                      enabledBorder: enb,
-                                                      filled: true,
-                                                      fillColor: StyleData.textFieldColor,
-                                                    ),
-                                                    inputFormatters: [
-                                                      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')),
-                                                    ],
-                                                    // validator: (value) {
-                                                    //   if (value == null || value.isEmpty) {
-                                                    //     return 'Please enter your first name';
-                                                    //   }
-                                                    //   return null;
-                                                    // },
-                                                  ),
-                                                  TextFormField(
-                                                    controller: lastName,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        checkCustomerFieldsFilled();
-                                                      });
-                                                    },
-                                                    decoration: InputDecoration(
-                                                      labelText: 'Last Name *',
-                                                      hintText: 'Enter Last Name',
-                                                      //  prefixIcon: Icon(Icons.person, color: HexColor("#7c8880"),),
-                                                     // border: InputBorder.none,
-                                                      focusedBorder: focus,
-                                                      enabledBorder: enb,
-                                                      filled: true,
-                                                      fillColor: StyleData.textFieldColor,
-                                                    ),
-                                                    inputFormatters: [
-                                                      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')),
-                                                    ],
-                                                    validator: (value) {
-                                                      if (value == null || value.isEmpty) {
-                                                        return 'Please enter your last name';
-                                                      }
-                                                      return null;
-                                                    },
-                                                  ),
-                                                  TextFormField(
-                                                    controller: customerNumber,
-                                                    keyboardType: TextInputType.phone,
-                                                    inputFormatters: [
-                                                      FilteringTextInputFormatter.digitsOnly,
-                                                      LengthLimitingTextInputFormatter(10),
-                                                    ],
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                     //   fetchAllCustomerMobile(value);
-                                                        checkCustomerFieldsFilled();
-                                                      });
-                                                    },
-                                                    decoration: InputDecoration(
-                                                      labelText: 'Customer Phone *',
-                                                      hintText: 'Enter Customer Phone',
-                                                      prefixText: '+91 ', // Add the prefix here
-                                                      // prefixIcon: Icon(Icons.person, color: HexColor("#7c8880"),),
-                                                      // border: InputBorder.none,
-                                                      focusedBorder: focus,
-                                                      enabledBorder: enb,
-                                                      filled: true,
-                                                      fillColor: StyleData.textFieldColor,
-                                                    ),
-                                                    validator: (value) {
-                                                      if (value == null || value.isEmpty) {
-                                                        return 'Please enter your last name';
-                                                      }
-                                                      return null;
-                                                    },
-                                                  ),
-        
-                                                  SizedBox(height: height * 0.02),
-                                                  Visibility(
-                                                    visible: areCustomerFieldsFilled,
-                                                    child: GestureDetector(
-                                                      onTap: () {
-                                                        if(areCustomerFieldsFilled)
-                                                        {
-                                                          setState(() {
-                                                            isVisitInfo = !isVisitInfo;
-                                                            isCustomerInfo = false;
-                                                         //   isAddressInfo = false;
-                                                            isOtherInfo = false;
-                                                          });
-                                                        }},
-                                                      child: Align(
-                                                        alignment: Alignment.bottomRight,
-                                                        child: Icon(
-                                                          Icons.arrow_circle_down,
-                                                          color: Colors.yellow.shade800, // Set your desired arrow color
-                                                          size: 22,
-                                                        ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )),
+                                                    ],
+                                                  )),
                                             ],
                                           ),
                                         )),
@@ -2190,15 +2286,15 @@ async {
                                   elevation: 3,
                                   child: GestureDetector(
                                     onTap: () {
-                                      if(areCustomerFieldsFilled)
-                                        {
-                                      setState(() {
-                                        isVisitInfo = !isVisitInfo;
-                                        isCustomerInfo = false;
-                                     //   isAddressInfo = false;
-                                        isOtherInfo = false;
-                                      });
-                                    }},
+                                      if (areCustomerFieldsFilled) {
+                                        setState(() {
+                                          isVisitInfo = !isVisitInfo;
+                                          isCustomerInfo = false;
+                                          //   isAddressInfo = false;
+                                          isOtherInfo = false;
+                                        });
+                                      }
+                                    },
                                     child: Container(
                                         color: Colors.white,
                                         child: Padding(
@@ -2219,88 +2315,133 @@ async {
                                                     SizedBox(
                                                       width: width * 0.05,
                                                     ),
-                                                    Text("Visit Information",style: TextStyle(color: StyleData.appBarColor,fontWeight: FontWeight.bold,fontSize: 16),),
+                                                    Text(
+                                                      "Visit Information",
+                                                      style: TextStyle(
+                                                          color: StyleData
+                                                              .appBarColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16),
+                                                    ),
                                                     Spacer(),
                                                     areVisitFieldsFilled
-                                                        ? Icon(Icons.check_circle_sharp, color: Colors.green, size: 22,)
-                                                        : Icon(Icons.arrow_drop_down_circle_rounded, color: StyleData.buttonColor, size: 22,)
+                                                        ? Icon(
+                                                            Icons
+                                                                .check_circle_sharp,
+                                                            color: Colors.green,
+                                                            size: 22,
+                                                          )
+                                                        : Icon(
+                                                            Icons
+                                                                .arrow_drop_down_circle_rounded,
+                                                            color: StyleData
+                                                                .buttonColor,
+                                                            size: 22,
+                                                          )
                                                   ],
                                                 ),
                                               ),
                                               // SizedBox(height: height * 0.015),
                                               Visibility(
-                                                  visible:  isVisitInfo == true,
+                                                  visible: isVisitInfo == true,
                                                   child: Column(
                                                     children: [
                                                       TextFormField(
-                                                    //    focusNode: _dateFocus,
-                                                    controller: _dateController,
+                                                        //    focusNode: _dateFocus,
+                                                        controller:
+                                                            _dateController,
                                                         // onChanged: (value) {
                                                         //   setState(() {
                                                         //     checkVisitFieldsFilled();
                                                         //   });
                                                         // },
-                                                  readOnly: true,
-                                                    onTap: () => _selectDate(context),
-                                                        decoration: InputDecoration(
-                                                          labelText: 'Visit Date *',
-                                                          suffixIcon: Icon(Icons.calendar_today),
+                                                        readOnly: true,
+                                                        onTap: () =>
+                                                            _selectDate(
+                                                                context),
+                                                        decoration:
+                                                            InputDecoration(
+                                                          labelText:
+                                                              'Visit Date *',
+                                                          suffixIcon: Icon(Icons
+                                                              .calendar_today),
                                                           focusedBorder: focus,
                                                           enabledBorder: enb,
                                                           filled: true,
-                                                          fillColor: StyleData.textFieldColor,
+                                                          fillColor: StyleData
+                                                              .textFieldColor,
                                                         ),
-        
+
                                                         validator: (value) {
-                                                          if (value == null || value.isEmpty) {
+                                                          if (value == null ||
+                                                              value.isEmpty) {
                                                             return 'Please Select visit date';
                                                           }
                                                           return null;
                                                         },
                                                       ),
                                                       TextFormField(
-                                                        controller: _timeController,
+                                                        controller:
+                                                            _timeController,
                                                         readOnly: true,
-                                                        onTap: () => _selectTime(context),
+                                                        onTap: () =>
+                                                            _selectTime(
+                                                                context),
                                                         // onChanged: (value) {
                                                         //   setState(() {
                                                         //     checkVisitFieldsFilled();
                                                         //   });
                                                         // },
-                                                        decoration: InputDecoration(
-                                                          labelText: 'Visit Time *',
-                                                          suffixIcon: Icon(Icons.access_time),
+                                                        decoration:
+                                                            InputDecoration(
+                                                          labelText:
+                                                              'Visit Time *',
+                                                          suffixIcon: Icon(Icons
+                                                              .access_time),
                                                           focusedBorder: focus,
                                                           enabledBorder: enb,
                                                           filled: true,
-                                                          fillColor: StyleData.textFieldColor,
+                                                          fillColor: StyleData
+                                                              .textFieldColor,
                                                         ),
                                                         validator: (value) {
-                                                          if (value == null || value.isEmpty) {
+                                                          if (value == null ||
+                                                              value.isEmpty) {
                                                             return 'Please enter visit time';
                                                           }
                                                           return null;
                                                         },
                                                       ),
-                                                      SizedBox(height: height * 0.02),
+                                                      SizedBox(
+                                                          height:
+                                                              height * 0.02),
                                                       Visibility(
-                                                        visible: areVisitFieldsFilled,
+                                                        visible:
+                                                            areVisitFieldsFilled,
                                                         child: GestureDetector(
                                                           onTap: () {
-                                                            if(areVisitFieldsFilled)
-                                                            {
+                                                            if (areVisitFieldsFilled) {
                                                               setState(() {
-                                                                isOtherInfo = !isOtherInfo;
-                                                                isVisitInfo = false;
-                                                                isCustomerInfo = false;
-                                                             //   isOtherInfo = false;
+                                                                isOtherInfo =
+                                                                    !isOtherInfo;
+                                                                isVisitInfo =
+                                                                    false;
+                                                                isCustomerInfo =
+                                                                    false;
+                                                                //   isOtherInfo = false;
                                                               });
-                                                            }},
+                                                            }
+                                                          },
                                                           child: Align(
-                                                            alignment: Alignment.bottomRight,
+                                                            alignment: Alignment
+                                                                .bottomRight,
                                                             child: Icon(
-                                                              Icons.arrow_circle_down,
-                                                              color: Colors.yellow.shade800, // Set your desired arrow color
+                                                              Icons
+                                                                  .arrow_circle_down,
+                                                              color: Colors
+                                                                  .yellow
+                                                                  .shade800, // Set your desired arrow color
                                                               size: 22,
                                                             ),
                                                           ),
@@ -2317,15 +2458,15 @@ async {
                                   elevation: 3,
                                   child: GestureDetector(
                                     onTap: () {
-                                      if(areVisitFieldsFilled)
-                                        {
-                                      setState(() {
-                                        isOtherInfo = !isOtherInfo;
-                                        isVisitInfo = false;
-                                        isCustomerInfo = false;
-                                      //  isAddressInfo = false;
-                                      });
-                                    }},
+                                      if (areVisitFieldsFilled) {
+                                        setState(() {
+                                          isOtherInfo = !isOtherInfo;
+                                          isVisitInfo = false;
+                                          isCustomerInfo = false;
+                                          //  isAddressInfo = false;
+                                        });
+                                      }
+                                    },
                                     child: Container(
                                         color: Colors.white,
                                         child: Padding(
@@ -2346,132 +2487,190 @@ async {
                                                     SizedBox(
                                                       width: width * 0.05,
                                                     ),
-                                                    Text("Other Information",style: TextStyle(color: StyleData.appBarColor,fontWeight: FontWeight.bold,fontSize: 16),),
+                                                    Text(
+                                                      "Other Information",
+                                                      style: TextStyle(
+                                                          color: StyleData
+                                                              .appBarColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16),
+                                                    ),
                                                     Spacer(),
                                                     areOtherFieldsFilled
-                                                        ? Icon(Icons.check_circle_sharp, color: Colors.green, size: 22,)
-                                                        : Icon(Icons.arrow_drop_down_circle_rounded, color: StyleData.buttonColor, size: 22,)
+                                                        ? Icon(
+                                                            Icons
+                                                                .check_circle_sharp,
+                                                            color: Colors.green,
+                                                            size: 22,
+                                                          )
+                                                        : Icon(
+                                                            Icons
+                                                                .arrow_drop_down_circle_rounded,
+                                                            color: StyleData
+                                                                .buttonColor,
+                                                            size: 22,
+                                                          )
                                                   ],
                                                 ),
                                               ),
                                               // SizedBox(height: height * 0.015),
                                               Visibility(
-                                                  visible:  isOtherInfo == true,
+                                                  visible: isOtherInfo == true,
                                                   child: Column(
                                                     children: [
-                                                      DropdownButtonFormField2<String>(
+                                                      DropdownButtonFormField2<
+                                                          String>(
                                                         value: selectedPurpose,
-                                                        onChanged: (String? newValue) {
+                                                        onChanged:
+                                                            (String? newValue) {
                                                           setState(() {
-                                                            selectedPurpose = newValue;
+                                                            selectedPurpose =
+                                                                newValue;
                                                             checkOtherFieldsFilled();
                                                           });
                                                         },
                                                         items: purposeVisit
-                                                            .map((String item){
+                                                            .map((String item) {
                                                           return DropdownMenuItem(
                                                             value: item,
                                                             child: Text(
                                                               item.toString(),
-                                                              style: const TextStyle(
-                                                                color: Color(0xFF393939),
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: Color(
+                                                                    0xFF393939),
                                                                 fontSize: 15,
-                                                                fontFamily: 'Poppins',
-                                                                fontWeight: FontWeight.w400,
+                                                                fontFamily:
+                                                                    'Poppins',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
                                                               ),
                                                             ),
                                                           );
                                                         }).toList(),
                                                         style: const TextStyle(
-                                                          color: Color(0xFF393939),
+                                                          color:
+                                                              Color(0xFF393939),
                                                           fontSize: 15,
                                                           fontFamily: 'Poppins',
-                                                          fontWeight: FontWeight.w400,
+                                                          fontWeight:
+                                                              FontWeight.w400,
                                                         ),
                                                         //   hint: const Text('Select an option'),
-                                                        decoration: InputDecoration(
-                                                          labelText: 'Purpose Of Visit *',
-                                                          hintText: 'Select an option',
-                                                          //  prefixIcon: Icon(Icons.person, color: HexColor("#7c8880"),),
-                                                        //  border: InputBorder.none,
-                                                          focusedBorder: focus,
-                                                          enabledBorder: enb,
-                                                          filled: true,
-                                                          fillColor:StyleData.textFieldColor,
-                                                        ),
-                                                        validator: (value) {
-                                                          if (value == null || value.isEmpty) {
-                                                            return 'Please enter purpose of visit';
-                                                          }
-                                                          return null;
-                                                        },
-                                                      ),
-                                                      DropdownButtonFormField2<String>(
-                                                        value: selectedCustomerStatus,
-                                                        onChanged: (String? newValue) {
-                                                          setState(() {
-                                                            selectedCustomerStatus = newValue;
-                                                            checkOtherFieldsFilled();
-                                                          });
-                                                        },
-                                                        items: customerStatus
-                                                            .map((String item){
-                                                          return DropdownMenuItem(
-                                                            value: item,
-                                                            child: Text(
-                                                              item.toString(),
-                                                              style: const TextStyle(
-                                                                color: Color(0xFF393939),
-                                                                fontSize: 15,
-                                                                fontFamily: 'Poppins',
-                                                                fontWeight: FontWeight.w400,
-                                                              ),
-                                                            ),
-                                                          );
-                                                        }).toList(),
-                                                        style: const TextStyle(
-                                                          color: Color(0xFF393939),
-                                                          fontSize: 15,
-                                                          fontFamily: 'Poppins',
-                                                          fontWeight: FontWeight.w400,
-                                                        ),
-                                                        //   hint: const Text('Select an option'),
-                                                        decoration: InputDecoration(
-                                                          labelText: 'Customer Status *',
-                                                          hintText: 'Select an option',
+                                                        decoration:
+                                                            InputDecoration(
+                                                          labelText:
+                                                              'Purpose Of Visit *',
+                                                          hintText:
+                                                              'Select an option',
                                                           //  prefixIcon: Icon(Icons.person, color: HexColor("#7c8880"),),
                                                           //  border: InputBorder.none,
                                                           focusedBorder: focus,
                                                           enabledBorder: enb,
                                                           filled: true,
-                                                          fillColor:StyleData.textFieldColor,
+                                                          fillColor: StyleData
+                                                              .textFieldColor,
                                                         ),
                                                         validator: (value) {
-                                                          if (value == null || value.isEmpty) {
+                                                          if (value == null ||
+                                                              value.isEmpty) {
+                                                            return 'Please enter purpose of visit';
+                                                          }
+                                                          return null;
+                                                        },
+                                                      ),
+                                                      DropdownButtonFormField2<
+                                                          String>(
+                                                        value:
+                                                            selectedCustomerStatus,
+                                                        onChanged:
+                                                            (String? newValue) {
+                                                          setState(() {
+                                                            selectedCustomerStatus =
+                                                                newValue;
+                                                            checkOtherFieldsFilled();
+                                                          });
+                                                        },
+                                                        items: customerStatus
+                                                            .map((String item) {
+                                                          return DropdownMenuItem(
+                                                            value: item,
+                                                            child: Text(
+                                                              item.toString(),
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: Color(
+                                                                    0xFF393939),
+                                                                fontSize: 15,
+                                                                fontFamily:
+                                                                    'Poppins',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }).toList(),
+                                                        style: const TextStyle(
+                                                          color:
+                                                              Color(0xFF393939),
+                                                          fontSize: 15,
+                                                          fontFamily: 'Poppins',
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                        ),
+                                                        //   hint: const Text('Select an option'),
+                                                        decoration:
+                                                            InputDecoration(
+                                                          labelText:
+                                                              'Customer Status *',
+                                                          hintText:
+                                                              'Select an option',
+                                                          //  prefixIcon: Icon(Icons.person, color: HexColor("#7c8880"),),
+                                                          //  border: InputBorder.none,
+                                                          focusedBorder: focus,
+                                                          enabledBorder: enb,
+                                                          filled: true,
+                                                          fillColor: StyleData
+                                                              .textFieldColor,
+                                                        ),
+                                                        validator: (value) {
+                                                          if (value == null ||
+                                                              value.isEmpty) {
                                                             return 'Please select Customer Status';
                                                           }
                                                           return null;
                                                         },
                                                       ),
                                                       Visibility(
-                                                        visible: selectedCustomerStatus == "Not Interested",
+                                                        visible:
+                                                            selectedCustomerStatus ==
+                                                                "Not Interested",
                                                         child: TextFormField(
-                                                          controller: _reasonNotInterested,
+                                                          controller:
+                                                              _reasonNotInterested,
                                                           onChanged: (value) {
                                                             setState(() {
                                                               //   fetchAllCustomerMobile(value);
                                                               checkOtherFieldsFilled();
                                                             });
                                                           },
-                                                           decoration: InputDecoration(
-                                                            labelText: 'Reason *',
-                                                            focusedBorder: focus,
+                                                          decoration:
+                                                              InputDecoration(
+                                                            labelText:
+                                                                'Reason *',
+                                                            focusedBorder:
+                                                                focus,
                                                             enabledBorder: enb,
                                                             filled: true,
-                                                            fillColor: StyleData.textFieldColor,
+                                                            fillColor: StyleData
+                                                                .textFieldColor,
                                                           ),
                                                           validator: (value) {
-                                                            if (value == null || value.isEmpty) {
+                                                            if (value == null ||
+                                                                value.isEmpty) {
                                                               return 'Please enter Reason';
                                                             }
                                                             return null;
@@ -2485,7 +2684,6 @@ async {
                                         )),
                                   ),
                                 ),
-        
                                 Card(
                                   elevation: 4.0,
                                   shape: RoundedRectangleBorder(
@@ -2499,17 +2697,20 @@ async {
                                       maxLines: 2,
                                       decoration: InputDecoration(
                                         hintText: 'Location',
-                                        prefixIcon: Icon(Icons.gps_fixed,color: StyleData.appBarColor2,),
-                                        contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                                        prefixIcon: Icon(
+                                          Icons.gps_fixed,
+                                          color: StyleData.appBarColor2,
+                                        ),
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 12.0, horizontal: 16.0),
                                       ),
                                     ),
                                   ),
                                 ),
-        
                               ],
                             ),
                           ),
-                          SizedBox(height:  height * 0.01),
+                          SizedBox(height: height * 0.01),
                           Visibility(
                             visible: isLeadSourceSelected == true,
                             child: Column(
@@ -2517,7 +2718,7 @@ async {
                               children: <Widget>[
                                 InkWell(
                                   onTap: () {
-                                   // getStartImage(ImageSource.camera);
+                                    // getStartImage(ImageSource.camera);
                                     showImageSourceOptions();
                                   },
                                   child: ClipOval(
@@ -2535,7 +2736,9 @@ async {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height:  height * 0.01), // Space between icon and text
+                                SizedBox(
+                                    height: height *
+                                        0.01), // Space between icon and text
                                 Text(
                                   'Capture Selfie',
                                   style: TextStyle(
@@ -2544,39 +2747,44 @@ async {
                                     fontSize: 16,
                                   ),
                                 ),
-                              //  _isVisible
+                                //  _isVisible
                                 _isVisible && startimage != null
                                     ? Stack(
-                                  children: [
-                                    Image.file(
-                                      startimage!,
-                                      width: MediaQuery.of(context).size.width * 0.8,
-                                      height: MediaQuery.of(context).size.width * 0.8,
-                                      fit: BoxFit.cover,
-                                    ),
-                                    Positioned(
-                                      bottom: 10,
-                                      left: 10,
-                                      child: Container(
-                                        // color: Colors.white,
-                                        child: Text(
-                                          '${currentDateTime}\nLat: ${currentposition?.latitude}, Long: ${currentposition?.longitude}',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          fontWeight: FontWeight.w600,
+                                        children: [
+                                          Image.file(
+                                            startimage!,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.8,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.8,
+                                            fit: BoxFit.cover,
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
+                                          Positioned(
+                                            bottom: 10,
+                                            left: 10,
+                                            child: Container(
+                                              // color: Colors.white,
+                                              child: Text(
+                                                '${currentDateTime}\nLat: ${currentposition?.latitude}, Long: ${currentposition?.longitude}',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )
                                     : Container(),
-
                               ],
                             ),
                           ),
                           SizedBox(
-                            height:  height * 0.36,
+                            height: height * 0.36,
                           ),
                         ],
                       ),
@@ -2593,24 +2801,23 @@ async {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate() &&
-                            areCustomerFieldsFilled == true && areVisitFieldsFilled == true
-                             && areOtherFieldsFilled == true) {
-                          if(startimage != null) {
-                            //  visitCreation();
-                            if (customerNumber.text.length < 10) {
-                              CustomSnackBar.errorSnackBarQ(
-                                  "Please enter valid Mobile Number", context);
-                            }
-                            else {
-                              fetchAllCustomerMobile(customerNumber.text);
-                            }
-                          }else{
-                            CustomSnackBar.errorSnackBarQ("Please Capture Selfie", context);
+                            areCustomerFieldsFilled == true &&
+                            areVisitFieldsFilled == true &&
+                            areOtherFieldsFilled == true) {
+                          // if(startimage != null) {
+                          //  visitCreation();
+                          if (customerNumber.text.length < 10) {
+                            CustomSnackBar.errorSnackBarQ(
+                                "Please enter valid Mobile Number", context);
+                          } else {
+                            fetchAllCustomerMobile(customerNumber.text);
                           }
-        
-                        }
-                        else {
-                          CustomSnackBar.errorSnackBarQ("Please enter all the mandatory fields", context);
+                          // }else{
+                          //   CustomSnackBar.errorSnackBarQ("Please Capture Selfie", context);
+                          // }
+                        } else {
+                          CustomSnackBar.errorSnackBarQ(
+                              "Please enter all the mandatory fields", context);
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -2649,32 +2856,45 @@ async {
             backgroundColor: Colors.white,
             elevation: 0, // No shadow
             content: Container(
-              height:200,
+              height: 200,
               width: 200,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Center(
-                    child:
-                    Container(
+                    child: Container(
                       height: 80,
                       width: 65,
                       decoration: BoxDecoration(
-                          color: Colors.green,
-                          shape: BoxShape.circle
-                      ),
+                          color: Colors.green, shape: BoxShape.circle),
                       child: Center(
-                        child: Icon(Icons.done,color: Colors.white,),
+                        child: Icon(
+                          Icons.done,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
                   SizedBox(height: 8),
-                  Text('Visit created successfully', textAlign: TextAlign.center, style: TextStyle(color: Colors.black87,fontSize: 16,),),
+                  Text(
+                    'Visit created successfully',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 16,
+                    ),
+                  ),
                   //  SizedBox(height: 8),
                   Row(
                     children: [
-                      Text('Visit ID - ', textAlign: TextAlign.center,style: TextStyle(color: Colors.black87)),
-                      Text('$visitID', textAlign: TextAlign.center,style: TextStyle(color: Colors.black87,fontWeight: FontWeight.bold)),
+                      Text('Visit ID - ',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.black87)),
+                      Text('$visitID',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold)),
                     ],
                   ),
                   SizedBox(height: 5),
@@ -2685,7 +2905,9 @@ async {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePageView(Token: '',),
+                            builder: (context) => HomePageView(
+                              Token: '',
+                            ),
                           ),
                         );
                       },
@@ -2706,6 +2928,7 @@ async {
       },
     );
   }
+
   String formatDate(String dateString) {
     try {
       // Assuming dateString is in the format 'yyyy-MM-dd HH:mm:ss.SSS'

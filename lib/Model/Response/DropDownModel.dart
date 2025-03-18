@@ -14,3 +14,9 @@ class DropDownData {
 
   DropDownData(this.id, this.title);
 }
+class DropDownStringData {
+  final String id;
+  final String title;
+
+  DropDownStringData(this.id, this.title);
+}

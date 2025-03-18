@@ -24,7 +24,6 @@ class ApplicantDetailsView extends StatefulWidget {
 }
 
 class _ApplicantDetailsViewState extends State<ApplicantDetailsView> {
-
   bool consentCRIF = true;
   bool consentKYC = true;
   ScrollController _scrollController = ScrollController();
@@ -37,49 +36,56 @@ class _ApplicantDetailsViewState extends State<ApplicantDetailsView> {
   bool _isLoading = true;
 
   void fetchdata() async {
-    CollectionReference users = FirebaseFirestore.instance.collection('convertedLeads');
+    CollectionReference users =
+        FirebaseFirestore.instance.collection('convertedLeads');
     SharedPreferences pref = await SharedPreferences.getInstance();
-   // var userId = pref.getString("token");
+    // var userId = pref.getString("token");
     var userId = pref.getString("userID");
     setState(() {
       userType = pref.getString("logintype");
     });
-  //  print(userType);
+    //  print(userType);
     if (userType == "user") {
       users.where("userId", isEqualTo: userId).get().then((value) {
-        List<DocumentSnapshot> filteredList = value.docs.where((doc) => (doc["LeadID"] as String).length > 1).toList();
+        List<DocumentSnapshot> filteredList = value.docs
+            .where((doc) => (doc["LeadID"] as String).length > 1)
+            .toList();
         setState(() {
           ListOfLeads = filteredList;
         });
         for (var i = 0; filteredList.length > i; i++) {
-        //  print(filteredList[i].data());
+          //  print(filteredList[i].data());
         }
       });
     } else {
       users.get().then((value) {
-        List<DocumentSnapshot> filteredList = value.docs.where((doc) => (doc["LeadID"] as String).length > 1).toList();
+        List<DocumentSnapshot> filteredList = value.docs
+            .where((doc) => (doc["LeadID"] as String).length > 1)
+            .toList();
         setState(() {
           ListOfLeads = filteredList;
         });
         for (var i = 0; filteredList.length > i; i++) {
-       //   print(filteredList[i].data());
+          //   print(filteredList[i].data());
         }
       });
     }
   }
+
   List<DocumentSnapshot> searchListOfLeads = [];
   void _runFilter(String enteredKeyword) {
     var data = ListOfLeads.where((row) => (row["firstName"]
-        .toString()
-        .toUpperCase()
-        .contains(enteredKeyword.toUpperCase())||
+            .toString()
+            .toUpperCase()
+            .contains(enteredKeyword.toUpperCase()) ||
         row["LeadID"]
             .toString()
             .toUpperCase()
-            .contains(enteredKeyword.toUpperCase()) || row["productCategory"]
-        .toString()
-        .toUpperCase()
-        .contains(enteredKeyword.toUpperCase()))).toList();
+            .contains(enteredKeyword.toUpperCase()) ||
+        row["productCategory"]
+            .toString()
+            .toUpperCase()
+            .contains(enteredKeyword.toUpperCase()))).toList();
     setState(() {
       searchListOfLeads = data;
     });
@@ -115,13 +121,15 @@ class _ApplicantDetailsViewState extends State<ApplicantDetailsView> {
     if (pickedDate != null) {
       setState(() {
         if (type == 1) {
-          _startDateController.text = formatDate(pickedDate.toLocal().toString());
+          _startDateController.text =
+              formatDate(pickedDate.toLocal().toString());
         } else {
           _endDateController.text = formatDate(pickedDate.toLocal().toString());
         }
       });
     }
   }
+
   String formatDate(String dateString) {
     try {
       // Assuming dateString is in the format 'yyyy-MM-dd HH:mm:ss.SSS'
@@ -135,13 +143,12 @@ class _ApplicantDetailsViewState extends State<ApplicantDetailsView> {
     }
   }
 
-
-  Future<void> getToken()
-  async {
+  Future<void> getToken() async {
     var headers = {
       'X-PrettyPrint': '1',
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Cookie': 'BrowserId=qnhrXMyBEe6lOh9ncfvoTw; CookieConsentPolicy=0:1; LSKey-c\$CookieConsentPolicy=0:1'
+      'Cookie':
+          'BrowserId=qnhrXMyBEe6lOh9ncfvoTw; CookieConsentPolicy=0:1; LSKey-c\$CookieConsentPolicy=0:1'
     };
     var data = {
       'grant_type': 'password',
@@ -150,10 +157,10 @@ class _ApplicantDetailsViewState extends State<ApplicantDetailsView> {
       'username': ApiUrls().userNameProduction,
       'password': ApiUrls().passwordProduction
       // 'grant_type': 'password',
-      // 'client_id': '3MVG9ct5lb5FGJTNKeeA63nutsPt.67SWB9mzXh9na.RBlkmz2FxM4KH31kKmHWMWQHD1y2apE9qmtoRtiQ9R',
-      // 'client_secret': 'E9DDAF90143A7B4C6CA622463EFDA17843174AB347FD74A6905F853CD2406BDE',
-      // 'username': 'itkrishnaprasad@muthootgroup.com.dev2',
-      // 'password': 'Karthikrishna@127jb7htnfs8WigpiW5SOP6I7qZ'
+      // 'client_id': '3MVG9u0ll7_j5qFxuFGIYQ4WguPM0jYjSJXprZRrAAOaI8q0BVKqxCt1dzjQ0tti3JDqnTeGjj1Dk7v9.QwnQ',
+      // 'client_secret': 'ED297E5AD800E43B413260D0C4C7CFA7F49D11CE440F2EBC88220064B32D51CD',
+      // 'username': 'itkrishnaprasad@muthootgroup.com',
+      // 'password': 'Muthoot@123yhvmSWG1rJpPkDhbPu3SBg5Y'
     };
     var dio = Dio();
     var response = await dio.request(
@@ -167,7 +174,6 @@ class _ApplicantDetailsViewState extends State<ApplicantDetailsView> {
 
     String? accessToken;
     if (response.statusCode == 200) {
-
       String jsonResponse = json.encode(response.data);
       Map<String, dynamic> jsonMap = json.decode(jsonResponse);
       accessToken = jsonMap['access_token'];
@@ -178,13 +184,13 @@ class _ApplicantDetailsViewState extends State<ApplicantDetailsView> {
       print(accessToken);
     }
   }
+
   Future<void> saveAccessToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('access_token', token);
     print("Stored Access token");
     print(token);
   }
-
 
   @override
   void initState() {
@@ -195,6 +201,7 @@ class _ApplicantDetailsViewState extends State<ApplicantDetailsView> {
       loadData();
     });
   }
+
   void loadData() {
     setState(() {
       _isLoading = false;
@@ -209,27 +216,40 @@ class _ApplicantDetailsViewState extends State<ApplicantDetailsView> {
       body: _isLoading ? _buildShimmerList() : _buildListView(context),
     );
   }
+
   Widget _buildShimmerList() {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar:  AppBar(
+      appBar: AppBar(
         backgroundColor: StyleData.appBarColor2,
         leading: Padding(
           padding: const EdgeInsets.all(19.0),
           child: InkWell(
-            onTap: (){
+            onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      HomePageView(Token: '',),
+                  builder: (context) => HomePageView(
+                    Token: '',
+                  ),
                 ),
               );
             },
-            child:  Icon(Icons.home, size: 30,color: Colors.white,),),
+            child: Icon(
+              Icons.home,
+              size: 30,
+              color: Colors.white,
+            ),
+          ),
         ),
-        title: Text("Lead Details",style: TextStyle(color: Colors.white,fontSize: 18,fontFamily: StyleData.boldFont),),
+        title: Text(
+          "Lead Details",
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontFamily: StyleData.boldFont),
+        ),
         centerTitle: true,
         actions: [
           Padding(
@@ -241,8 +261,11 @@ class _ApplicantDetailsViewState extends State<ApplicantDetailsView> {
                 ),
                 Builder(
                   builder: (context) {
-                    String countText = searchKEY.text.isEmpty ? ListOfLeads.length.toString() : searchListOfLeads.length.toString();
-                    double textWidth = countText.length * 8.0; // Adjust 8.0 based on your font size and preference
+                    String countText = searchKEY.text.isEmpty
+                        ? ListOfLeads.length.toString()
+                        : searchListOfLeads.length.toString();
+                    double textWidth = countText.length *
+                        8.0; // Adjust 8.0 based on your font size and preference
                     return Container(
                       width: textWidth + 20,
                       height: height * 0.036,
@@ -318,7 +341,6 @@ class _ApplicantDetailsViewState extends State<ApplicantDetailsView> {
     );
   }
 
-
   @override
   Widget _buildListView(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -329,338 +351,410 @@ class _ApplicantDetailsViewState extends State<ApplicantDetailsView> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePageView(Token: '',),
+            builder: (context) => HomePageView(
+              Token: '',
+            ),
           ),
         );
         // Prevent the default back navigation
         return false;
       },
       child: Scaffold(
-        appBar:  AppBar(
+        appBar: AppBar(
           backgroundColor: StyleData.appBarColor2,
           leading: Padding(
             padding: const EdgeInsets.all(19.0),
             child: InkWell(
-                onTap: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomePageView(Token: '',),
-                    ),
-                  );
-                },
-                child:  Icon(Icons.home, size: 30,color: Colors.white,),),
-          ),
-          title: Text("All Leads",style: TextStyle(color: Colors.white,fontSize: 18,fontFamily: StyleData.boldFont),),
-          centerTitle: true,
-      actions: [
-        Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        children: [
-          SizedBox(
-            width: width * 0.05,
-          ),
-          Builder(
-            builder: (context) {
-              String countText = searchKEY.text.isEmpty ? ListOfLeads.length.toString() : searchListOfLeads.length.toString();
-              double textWidth = countText.length * 8.0; // Adjust 8.0 based on your font size and preference
-              return Container(
-                width: textWidth + 20,
-                height: height * 0.036,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white24,
-                ),
-                child: Center(
-                  child: Text(
-                    countText,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontFamily: 'Poppins',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePageView(
+                      Token: '',
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+              child: Icon(
+                Icons.home,
+                size: 30,
+                color: Colors.white,
+              ),
+            ),
           ),
-        ],
-      ),
+          title: Text(
+            "All Leads",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontFamily: StyleData.boldFont),
+          ),
+          centerTitle: true,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: width * 0.05,
+                  ),
+                  Builder(
+                    builder: (context) {
+                      String countText = searchKEY.text.isEmpty
+                          ? ListOfLeads.length.toString()
+                          : searchListOfLeads.length.toString();
+                      double textWidth = countText.length *
+                          8.0; // Adjust 8.0 based on your font size and preference
+                      return Container(
+                        width: textWidth + 20,
+                        height: height * 0.036,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white24,
+                        ),
+                        child: Center(
+                          child: Text(
+                            countText,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-      ],
-        ),
-         body:    SingleChildScrollView(
-           child: Column(
-             children: [
-               SizedBox(
-                 height: height * 0.01,
-               ),
-               Container(
-                 child: Padding(
-                   padding: const EdgeInsets.all(8.0),
-                   child: TextField(
-                     controller: searchKEY,
-                     style: const TextStyle(fontSize: 14,color: Colors.black54),
-                     cursorColor: Colors.black87,
-                     decoration: InputDecoration(
-                       hintText: 'Search...',
-                       labelStyle: TextStyle(
-                           fontSize: 16,
-                           color: Colors.black54
-                       ),
-                       focusedBorder: OutlineInputBorder(
-                           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                           borderSide: BorderSide(color:Colors.black54)),
-                       contentPadding: const EdgeInsets.only(left: 1,),
-                       hintStyle: const TextStyle(fontSize: 14,color: Colors.black54),
-                       prefixIcon: IconButton(
-                         icon: Icon(Icons.search),
-                         onPressed: () {},
-                       ),
-                       border: OutlineInputBorder(
-                           borderRadius: BorderRadius.circular(20.0),
-                           borderSide: new BorderSide(color: Colors.grey)),
-                     ),
-                     onChanged: (value) {
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                height: height * 0.01,
+              ),
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: searchKEY,
+                    style: const TextStyle(fontSize: 14, color: Colors.black54),
+                    cursorColor: Colors.black87,
+                    decoration: InputDecoration(
+                      hintText: 'Search...',
+                      labelStyle:
+                          TextStyle(fontSize: 16, color: Colors.black54),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          borderSide: BorderSide(color: Colors.black54)),
+                      contentPadding: const EdgeInsets.only(
+                        left: 1,
+                      ),
+                      hintStyle:
+                          const TextStyle(fontSize: 14, color: Colors.black54),
+                      prefixIcon: IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () {},
+                      ),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                          borderSide: new BorderSide(color: Colors.grey)),
+                    ),
+                    onChanged: (value) {
                       _runFilter(value);
-                     },
-                   ),
-                 ),
-               ),
-               SizedBox(
-                 height: height * 0.01,
-               ),
-               SizedBox(
-                 height:  MediaQuery.of(context).size.height,
-                 width: MediaQuery.of(context).size.width,
-                 child:ListOfLeads.isNotEmpty ?
-                 Scrollbar(
-                   thickness: 8.5,
-                   thumbVisibility: true,
-                   radius: const Radius.circular(8),
-                   controller: _scrollController,
-                   child: ListView.builder(
-                     controller: _scrollController,
-                     itemCount: searchKEY.text.isEmpty
-                         ? ListOfLeads.length
-                         : searchListOfLeads.length,
-                     itemBuilder: (context, index) {
-                       ListOfLeads.sort((a, b) =>
-                           (b['createdDateTime'] as Timestamp).compareTo(a['createdDateTime'] as Timestamp));
-                       return InkWell(
-                         onTap: () {
-                         },
-                         child: Container(
-                           margin: EdgeInsets.only(bottom: 8.0),
-                           decoration: BoxDecoration(
-                             borderRadius: BorderRadius.circular(8.0),
-                             color: Colors.white,
-                             boxShadow: [
-                               BoxShadow(
-                                 color: Colors.grey.withOpacity(0.5),
-                                 spreadRadius: 2,
-                                 blurRadius: 5,
-                                 offset: Offset(0, 3),
-                               ),
-                             ],
-                           ),
-                           child: Padding(
-                             padding: EdgeInsets.all(8.0),
-                             child: GestureDetector(
-                               onTap: () {
-                              //  commented for first phase
-                                 if(ListOfLeads[index]["VerificationStatus"] == "Pending" || ListOfLeads[index]["VerificationStatus"] == "Push Back" || ListOfLeads[index]["VerificationStatus"] == "Verified")
-                                 Navigator.push(
-                                     context,
-                                   MaterialPageRoute(
-                                       builder: (context) =>  DocumentPageView(
-                                         docId: searchKEY.text.isEmpty ? ListOfLeads[index].id : searchListOfLeads[index].id,
-                                         leadID: ListOfLeads[index]["LeadID"],
-                                           isNewActivity: false,
-                                         visitID: ListOfLeads[index]["VisitID"],
-                                           consentHandle: ListOfLeads[index]["consentHandle"] ?? "",
-                                         isTechChecklist : istechnicalChecklist,
-                                           isPartiallyVerifiedLeads : false
-                                       ))
-                                     // MaterialPageRoute(
-                                     //     builder: (context) => DocumentChecklistPageView(
-                                     //       docId: searchKEY.text.isEmpty ? ListOfLeads[index].id : searchListOfLeads[index].id,
-                                     //         leadId: ListOfLeads[index]["LeadID"],
-                                     //         isNewActivity: false,
-                                     //         isUpdateActivity:true
-                                     //     ))
-                                 );
-                               },
-                               child: Column(
-                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                 children: [
-                                   Row(
-                                     children: [
-                                       Text(
-                                         "Status : ",
-                                         style: TextStyle(
-                                           color: StyleData.appBarColor2,
-                                           fontSize: 15.0,
-                                           fontWeight: FontWeight.bold,
-                                         ),
-                                       ),
-                                       Row(
-                                         children: [
-                                           Text(
-                                             searchKEY.text.isEmpty
-                                                 ? ListOfLeads[index]["VerificationStatus"] ?? ""
-                                                 : searchListOfLeads[index]["VerificationStatus"] ?? "",
-                                             style: TextStyle(
-                                               color: ListOfLeads[index]["VerificationStatus"] == 'Verified' ? Colors.green : ListOfLeads[index]["VerificationStatus"] == 'Pending' ?  Colors.red :  Colors.amber ,
-                                               fontSize: 14.0,
-                                               fontFamily: 'Poppins',
-                                             ),
-                                           ),
-                                           // Text(
-                                           //   searchKEY.text.isEmpty
-                                           //       ? (ListOfLeads[index]["technicalStatus"] != null
-                                           //       ? ListOfLeads[index]["technicalStatus"]
-                                           //       : "")
-                                           //       : (searchListOfLeads[index]["technicalStatus"] != null
-                                           //       ? searchListOfLeads[index]["technicalStatus"]
-                                           //       : ""),
-                                           //   style: TextStyle(
-                                           //     color: Colors.green,
-                                           //     fontSize: 14.0,
-                                           //     fontFamily: 'Poppins',
-                                           //   ),
-                                           // ),
-
-                                         ],
-                                       ),
-                                     ],
-                                   ),
-                                   Row(
-                                   //  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                     children: [
-                                   ListOfLeads[index]["VerificationStatus"] == 'Verified' ?
-                                       Icon(
-                                           Icons.star,
-                                           color: Colors.yellow.shade800
-                                       )
-                                           :  Icon(
-                                           Icons.incomplete_circle_sharp,
-                                           color: Colors.grey
-                                       ),
-                                       SizedBox(
-                                         width: width * 0.08,
-                                       ),
-                                       Row(
-                                         children: [
-                                           Text(
-                                             "Lead ID - ",
-                                             style: TextStyle(
-                                               color: StyleData.appBarColor2,
-                                               fontSize: 18.0,
-                                               fontWeight: FontWeight.bold,
-                                             ),
-                                           ),
-                                           Text(
-                                             searchKEY.text.isEmpty
-                                                 ? ListOfLeads[index]["LeadID"] ?? ""
-                                                 : searchListOfLeads[index]["LeadID"] ?? "",
-                                             style: TextStyle(
-                                               color: Colors.black54,
-                                               fontSize: 14.0,
-                                               fontFamily: 'Poppins',
-                                             ),
-                                           ),
-                                         ],
-                                       ),
-                                     ],
-                                   ),
-                                   Divider(
-                                     color: StyleData.appBarColor2,
-                                     thickness: 0.3,
-                                   ),
-                                   Row(
-                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                     children: [
-                                       Column(
-                                         children: [
-                                           Row(
-                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                             children: [
-                                               Text(
-                                                 "Applicant Name",
-                                                 style: TextStyle(
-                                                   color: Colors.red.shade300,
-                                                   fontSize: 16.0,
-                                                   fontWeight: FontWeight.bold,
-                                                   fontFamily: 'Poppins',
-                                                 ),
-                                               ),
-                                             ],
-                                           ),
-                                           Text(
-                                             searchKEY.text.isEmpty
-                                                 ? ListOfLeads[index]["firstName"] + " " + ListOfLeads[index]["lastName"]
-                                                 : searchListOfLeads[index]["firstName"] + " " + ListOfLeads[index]["lastName"],
-                                             style: TextStyle(
-                                               color: Colors.black54,
-                                               fontSize: 14.0,
-                                             ),
-                                           ),
-                                         ],
-                                       ),
-                                       Column(
-                                         children: [
-                                           Row(
-                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                             children: [
-                                               Text(
-                                                 "Product Category",
-                                                 style: TextStyle(
-                                                   color: Colors.red.shade300,
-                                                   fontSize: 16.0,
-                                                   fontWeight: FontWeight.bold,
-                                                   fontFamily: 'Poppins',
-                                                 ),
-                                               ),
-                                             ],
-                                           ),
-                                           Text(
-                                             searchKEY.text.isEmpty
-                                                 ? ListOfLeads[index]["productCategory"]
-                                                 : searchListOfLeads[index]["productCategory"],
-                                             style: TextStyle(
-                                               color: Colors.black54,
-                                               fontSize: 14.0,
-                                             ),
-                                           ),
-                                         ],
-                                       ),
-
-                                     ],
-                                   )
-                                 ],
-                               ),
-                             ),
-                           ),
-                         ),
-
-                       );
-                     },
-                   ),
-                 )
-                     : Center(
-                       child: const Text(
-                                  'No Data found',
-                                  style: TextStyle(fontSize: 24),
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: height * 0.01,
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: ListOfLeads.isNotEmpty
+                    ? Scrollbar(
+                        thickness: 8.5,
+                        thumbVisibility: true,
+                        radius: const Radius.circular(8),
+                        controller: _scrollController,
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount: searchKEY.text.isEmpty
+                              ? ListOfLeads.length
+                              : searchListOfLeads.length,
+                          itemBuilder: (context, index) {
+                            ListOfLeads.sort((a, b) => (b['createdDateTime']
+                                    as Timestamp)
+                                .compareTo(a['createdDateTime'] as Timestamp));
+                            return InkWell(
+                              onTap: () {},
+                              child: Container(
+                                margin: EdgeInsets.only(bottom: 8.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: Offset(0, 3),
+                                    ),
+                                  ],
                                 ),
-                     ),
-               ),
-             ],
-           ),
-         ),
-
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      //  commented for first phase
+                                      if (ListOfLeads[index]
+                                                  ["VerificationStatus"] ==
+                                              "Pending" ||
+                                          ListOfLeads[index]
+                                                  ["VerificationStatus"] ==
+                                              "Push Back" ||
+                                          ListOfLeads[index]
+                                                  ["VerificationStatus"] ==
+                                              "Verified")
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => DocumentPageView(
+                                                    docId: searchKEY
+                                                            .text.isEmpty
+                                                        ? ListOfLeads[index].id
+                                                        : searchListOfLeads[
+                                                                index]
+                                                            .id,
+                                                    leadID: ListOfLeads[index]
+                                                        ["LeadID"],
+                                                    isNewActivity: false,
+                                                    visitID: ListOfLeads[index]
+                                                        ["VisitID"],
+                                                    consentHandle: ListOfLeads[
+                                                                index]
+                                                            ["consentHandle"] ??
+                                                        "",
+                                                    isTechChecklist:
+                                                        istechnicalChecklist,
+                                                    isPartiallyVerifiedLeads:
+                                                        false))
+                                            // MaterialPageRoute(
+                                            //     builder: (context) => DocumentChecklistPageView(
+                                            //       docId: searchKEY.text.isEmpty ? ListOfLeads[index].id : searchListOfLeads[index].id,
+                                            //         leadId: ListOfLeads[index]["LeadID"],
+                                            //         isNewActivity: false,
+                                            //         isUpdateActivity:true
+                                            //     ))
+                                            );
+                                    },
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Status : ",
+                                              style: TextStyle(
+                                                color: StyleData.appBarColor2,
+                                                fontSize: 15.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  searchKEY.text.isEmpty
+                                                      ? ListOfLeads[index][
+                                                              "VerificationStatus"] ??
+                                                          ""
+                                                      : searchListOfLeads[index]
+                                                              [
+                                                              "VerificationStatus"] ??
+                                                          "",
+                                                  style: TextStyle(
+                                                    color: ListOfLeads[index][
+                                                                "VerificationStatus"] ==
+                                                            'Verified'
+                                                        ? Colors.green
+                                                        : ListOfLeads[index][
+                                                                    "VerificationStatus"] ==
+                                                                'Pending'
+                                                            ? Colors.red
+                                                            : Colors.amber,
+                                                    fontSize: 14.0,
+                                                    fontFamily: 'Poppins',
+                                                  ),
+                                                ),
+                                                // Text(
+                                                //   searchKEY.text.isEmpty
+                                                //       ? (ListOfLeads[index]["technicalStatus"] != null
+                                                //       ? ListOfLeads[index]["technicalStatus"]
+                                                //       : "")
+                                                //       : (searchListOfLeads[index]["technicalStatus"] != null
+                                                //       ? searchListOfLeads[index]["technicalStatus"]
+                                                //       : ""),
+                                                //   style: TextStyle(
+                                                //     color: Colors.green,
+                                                //     fontSize: 14.0,
+                                                //     fontFamily: 'Poppins',
+                                                //   ),
+                                                // ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          //  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: [
+                                            ListOfLeads[index][
+                                                        "VerificationStatus"] ==
+                                                    'Verified'
+                                                ? Icon(Icons.star,
+                                                    color:
+                                                        Colors.yellow.shade800)
+                                                : Icon(
+                                                    Icons
+                                                        .incomplete_circle_sharp,
+                                                    color: Colors.grey),
+                                            SizedBox(
+                                              width: width * 0.08,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "Lead ID - ",
+                                                  style: TextStyle(
+                                                    color:
+                                                        StyleData.appBarColor2,
+                                                    fontSize: 18.0,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  searchKEY.text.isEmpty
+                                                      ? ListOfLeads[index]
+                                                              ["LeadID"] ??
+                                                          ""
+                                                      : searchListOfLeads[index]
+                                                              ["LeadID"] ??
+                                                          "",
+                                                  style: TextStyle(
+                                                    color: Colors.black54,
+                                                    fontSize: 14.0,
+                                                    fontFamily: 'Poppins',
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Divider(
+                                          color: StyleData.appBarColor2,
+                                          thickness: 0.3,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      "Applicant Name",
+                                                      style: TextStyle(
+                                                        color:
+                                                            Colors.red.shade300,
+                                                        fontSize: 16.0,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontFamily: 'Poppins',
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Text(
+                                                  searchKEY.text.isEmpty
+                                                      ? ListOfLeads[index]
+                                                              ["firstName"] +
+                                                          " " +
+                                                          ListOfLeads[index]
+                                                              ["lastName"]
+                                                      : searchListOfLeads[index]
+                                                              ["firstName"] +
+                                                          " " +
+                                                          ListOfLeads[index]
+                                                              ["lastName"],
+                                                  style: TextStyle(
+                                                    color: Colors.black54,
+                                                    fontSize: 14.0,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      "Product Category",
+                                                      style: TextStyle(
+                                                        color:
+                                                            Colors.red.shade300,
+                                                        fontSize: 16.0,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontFamily: 'Poppins',
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Text(
+                                                  searchKEY.text.isEmpty
+                                                      ? ListOfLeads[index]
+                                                          ["productCategory"]
+                                                      : searchListOfLeads[index]
+                                                          ["productCategory"],
+                                                  style: TextStyle(
+                                                    color: Colors.black54,
+                                                    fontSize: 14.0,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    : Center(
+                        child: const Text(
+                          'No Data found',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

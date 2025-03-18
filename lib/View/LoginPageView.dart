@@ -16,17 +16,18 @@ import '../Utils/StyleData.dart';
 import 'formPageVIiew.dart';
 import '../Utils/background.dart';
 
-
 class LoginScreen extends StatefulWidget {
   final String Token;
-  const LoginScreen({super.key,required this.Token,});
+  const LoginScreen({
+    super.key,
+    required this.Token,
+  });
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   String? accessToken;
   bool isPasswordVisible = false;
 
@@ -46,7 +47,8 @@ class _LoginScreenState extends State<LoginScreen> {
     var headers = {
       'X-PrettyPrint': '1',
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Cookie': 'BrowserId=qnhrXMyBEe6lOh9ncfvoTw; CookieConsentPolicy=0:1; LSKey-c\$CookieConsentPolicy=0:1'
+      'Cookie':
+          'BrowserId=qnhrXMyBEe6lOh9ncfvoTw; CookieConsentPolicy=0:1; LSKey-c\$CookieConsentPolicy=0:1'
     };
     var data = {
       'grant_type': 'password',
@@ -55,10 +57,12 @@ class _LoginScreenState extends State<LoginScreen> {
       'username': ApiUrls().userNameProduction,
       'password': ApiUrls().passwordProduction
       // 'grant_type': 'password',
-      // 'client_id': '3MVG9ct5lb5FGJTNKeeA63nutsPt.67SWB9mzXh9na.RBlkmz2FxM4KH31kKmHWMWQHD1y2apE9qmtoRtiQ9R',
-      // 'client_secret': 'E9DDAF90143A7B4C6CA622463EFDA17843174AB347FD74A6905F853CD2406BDE',
-      // 'username': 'itkrishnaprasad@muthootgroup.com.dev2',
-      // 'password': 'Muthoot@123psHRYkQwhAutEGemnXrS5cOu'
+      // 'client_id':
+      //     '3MVG9u0ll7_j5qFxuFGIYQ4WguPM0jYjSJXprZRrAAOaI8q0BVKqxCt1dzjQ0tti3JDqnTeGjj1Dk7v9.QwnQ',
+      // 'client_secret':
+      //     'ED297E5AD800E43B413260D0C4C7CFA7F49D11CE440F2EBC88220064B32D51CD',
+      // 'username': 'itkrishnaprasad@muthootgroup.com',
+      // 'password': 'Muthoot@123yhvmSWG1rJpPkDhbPu3SBg5Y'
     };
     var dio = Dio();
     var response = await dio.request(
@@ -71,10 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (response.statusCode == 200) {
-
       String jsonResponse = json.encode(response.data);
       Map<String, dynamic> jsonMap = json.decode(jsonResponse);
-     accessToken = jsonMap['access_token'];
+      accessToken = jsonMap['access_token'];
 
       // Store the access token locally
       saveAccessToken(accessToken!);
@@ -84,7 +87,9 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => HomePageView(Token: '',),
+          builder: (context) => HomePageView(
+            Token: '',
+          ),
         ),
       );
     }
@@ -108,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } finally {
       Navigator.pop(context); // Disabling the loader
-    //  print(response.statusMessage);
+      //  print(response.statusMessage);
     }
   }
 
@@ -120,7 +125,6 @@ class _LoginScreenState extends State<LoginScreen> {
     print(token);
   }
 
-
   void retrieveStoredCredentials() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? storedEmployeeCode = pref.getString("employeeCode");
@@ -131,7 +135,6 @@ class _LoginScreenState extends State<LoginScreen> {
       passwordController.text = storedPassword;
     }
   }
-
 
   @override
   void initState() {
@@ -145,14 +148,12 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordController = TextEditingController();
   final loginformKey = GlobalKey<FormState>();
 
-  UnderlineInputBorder enb =  UnderlineInputBorder(
+  UnderlineInputBorder enb = UnderlineInputBorder(
       borderRadius: BorderRadius.circular(10),
-      borderSide:   const BorderSide(color:  Colors.black38)
-  );
-  UnderlineInputBorder focus =  UnderlineInputBorder(
+      borderSide: const BorderSide(color: Colors.black38));
+  UnderlineInputBorder focus = UnderlineInputBorder(
       borderRadius: BorderRadius.circular(10),
-      borderSide:  const BorderSide(color: Color(0xff778287))
-  );
+      borderSide: const BorderSide(color: Color(0xff778287)));
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -171,142 +172,149 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: StyleData.buttonColor,
-                      fontSize: 36
-                  ),
+                      fontSize: 36),
                   textAlign: TextAlign.left,
                 ),
               ),
+              SizedBox(height: height * 0.03),
+              Form(
+                key: loginformKey,
+                child: Column(
+                  children: [
+                    // Container(
+                    //   alignment: Alignment.center,
+                    //   margin: EdgeInsets.symmetric(horizontal: 40),
+                    //   child: TextFormField(
+                    //     controller: emailController,
+                    //     style: const TextStyle(fontSize: 13,color: Colors.black54),
+                    //     textInputAction: TextInputAction.next,
+                    //     cursorColor: Colors.black87,
+                    //     decoration: InputDecoration(
+                    //         labelText: "Useremail",
+                    //       labelStyle: TextStyle(
+                    //         fontSize: 16,
+                    //         color: Colors.black54
+                    //       ),
+                    //
+                    //    prefixIcon: Icon(Icons.email_outlined,size: 18,color: Colors.black54),
+                    //       focusedBorder: focus,
+                    //       enabledBorder: enb,
+                    //       contentPadding: const EdgeInsets.only(left: 5,),
+                    //       hintStyle: const TextStyle(fontSize: 14,color: Colors.black54),
+                    //     ),
+                    //     validator: (value) {
+                    //       String p =
+                    //           r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                    //
+                    //       RegExp regExp = RegExp(p);
+                    //
+                    //       if (!regExp.hasMatch(value!)) {
+                    //         return "Enter valid email id";
+                    //       }
+                    //
+                    //       return null;
+                    //     },
+                    //   ),
+                    // ),
+                    Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.symmetric(horizontal: 40),
+                      child: TextFormField(
+                        controller: empCodeController,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.singleLineFormatter,
+                          LengthLimitingTextInputFormatter(7),
+                          // Convert input to uppercase
+                          UppercaseTextInputFormatter(),
+                        ],
+                        style: const TextStyle(
+                            fontSize: 13, color: Colors.black54),
+                        textInputAction: TextInputAction.next,
+                        cursorColor: Colors.black87,
+                        decoration: InputDecoration(
+                          labelText: "Employee Code",
+                          labelStyle: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black54,
+                          ),
+                          prefixIcon: Icon(Icons.person_3_outlined,
+                              size: 18, color: Colors.black54),
+                          focusedBorder: focus,
+                          enabledBorder: enb,
+                          contentPadding: const EdgeInsets.only(
+                            left: 5,
+                          ),
+                          hintStyle: const TextStyle(
+                              fontSize: 14, color: Colors.black54),
+                        ),
+                        validator: (isusercodevalid) {
+                          if (isusercodevalid.toString().isNotEmpty)
+                            return null;
+                          else
+                            return 'Enter valid Employee code';
+                        },
+                      ),
+                    ),
 
-              SizedBox(height:height * 0.03),
-                Form(
-                  key: loginformKey,
-                  child: Column(
-                    children: [
-                      // Container(
-                      //   alignment: Alignment.center,
-                      //   margin: EdgeInsets.symmetric(horizontal: 40),
-                      //   child: TextFormField(
-                      //     controller: emailController,
-                      //     style: const TextStyle(fontSize: 13,color: Colors.black54),
-                      //     textInputAction: TextInputAction.next,
-                      //     cursorColor: Colors.black87,
-                      //     decoration: InputDecoration(
-                      //         labelText: "Useremail",
-                      //       labelStyle: TextStyle(
-                      //         fontSize: 16,
-                      //         color: Colors.black54
-                      //       ),
-                      //
-                      //    prefixIcon: Icon(Icons.email_outlined,size: 18,color: Colors.black54),
-                      //       focusedBorder: focus,
-                      //       enabledBorder: enb,
-                      //       contentPadding: const EdgeInsets.only(left: 5,),
-                      //       hintStyle: const TextStyle(fontSize: 14,color: Colors.black54),
-                      //     ),
-                      //     validator: (value) {
-                      //       String p =
-                      //           r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                      //
-                      //       RegExp regExp = RegExp(p);
-                      //
-                      //       if (!regExp.hasMatch(value!)) {
-                      //         return "Enter valid email id";
-                      //       }
-                      //
-                      //       return null;
-                      //     },
-                      //   ),
-                      // ),
-                      Container(
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.symmetric(horizontal: 40),
-                        child: TextFormField(
-                          controller: empCodeController,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.singleLineFormatter,
-                            LengthLimitingTextInputFormatter(7),
-                            // Convert input to uppercase
-                            UppercaseTextInputFormatter(),
-                          ],
-                          style: const TextStyle(fontSize: 13, color: Colors.black54),
-                          textInputAction: TextInputAction.next,
-                          cursorColor: Colors.black87,
-                          decoration: InputDecoration(
-                            labelText: "Employee Code",
-                            labelStyle: TextStyle(
-                              fontSize: 16,
+                    SizedBox(height: height * 0.03),
+                    Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.symmetric(horizontal: 40),
+                      child: TextFormField(
+                        controller: passwordController,
+                        style: const TextStyle(
+                            fontSize: 13, color: Colors.black54),
+                        cursorColor: Colors.black87,
+                        decoration: InputDecoration(
+                          focusedBorder: focus,
+                          enabledBorder: enb,
+                          labelText: "Password",
+                          prefixIcon: Icon(Ionicons.lock_closed_outline,
+                              size: 18, color: Colors.black54),
+                          contentPadding: const EdgeInsets.only(
+                            left: 5,
+                          ),
+                          hintStyle: const TextStyle(
+                              fontSize: 14, color: Colors.black54),
+                          labelStyle: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black54,
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                               color: Colors.black54,
                             ),
-                            prefixIcon: Icon(Icons.person_3_outlined, size: 18, color: Colors.black54),
-                            focusedBorder: focus,
-                            enabledBorder: enb,
-                            contentPadding: const EdgeInsets.only(left: 5,),
-                            hintStyle: const TextStyle(fontSize: 14, color: Colors.black54),
+                            onPressed: () {
+                              // Toggle the password visibility
+                              setState(() {
+                                isPasswordVisible = !isPasswordVisible;
+                              });
+                            },
                           ),
-                          validator: (isusercodevalid) {
-                            if (isusercodevalid.toString().isNotEmpty)
-                              return null;
-                            else
-                              return 'Enter valid Employee code';
-                          },
                         ),
+                        obscureText: !isPasswordVisible,
+                        validator: (isPasswordValid) {
+                          if (isPasswordValid.toString().isNotEmpty)
+                            return null;
+                          else if (isPasswordValid!.length < 8) {
+                            return 'Password must contain at least 8 characters';
+                          } else
+                            return 'Enter a valid password';
+                        },
                       ),
-
-                      SizedBox(height:height * 0.03),
-                      Container(
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.symmetric(horizontal: 40),
-                        child: TextFormField(
-                          controller: passwordController,
-                          style: const TextStyle(fontSize: 13, color: Colors.black54),
-                          cursorColor: Colors.black87,
-                          decoration: InputDecoration(
-                            focusedBorder: focus,
-                            enabledBorder: enb,
-                            labelText: "Password",
-                            prefixIcon: Icon(Ionicons.lock_closed_outline, size: 18, color: Colors.black54),
-                            contentPadding: const EdgeInsets.only(left: 5,),
-                            hintStyle: const TextStyle(fontSize: 14, color: Colors.black54),
-                            labelStyle: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black54,
-                            ),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                                color: Colors.black54,
-                              ),
-                              onPressed: () {
-                                // Toggle the password visibility
-                                setState(() {
-                                  isPasswordVisible = !isPasswordVisible;
-                                });
-                              },
-                            ),
-                          ),
-                          obscureText: !isPasswordVisible,
-                          validator: (isPasswordValid) {
-                            if (isPasswordValid.toString().isNotEmpty)
-                              return null;
-                            else if (isPasswordValid!.length < 8) {
-                              return 'Password must contain at least 8 characters';
-                            } else
-                              return 'Enter a valid password';
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-
-
+              ),
               GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                        const ForgotPasswordView()),
+                        builder: (context) => const ForgotPasswordView()),
                   );
                 },
                 child: Container(
@@ -321,9 +329,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-
-              SizedBox(height:height * 0.05),
-
+              SizedBox(height: height * 0.05),
               GestureDetector(
                 onTap: () async {
                   if (loginformKey.currentState!.validate()) {
@@ -339,26 +345,32 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       },
                     );
-                      SharedPreferences pref = await SharedPreferences.getInstance();
-                    CollectionReference users = FirebaseFirestore.instance.collection('users');
-                    print('Employee Code from controller: ${empCodeController.text}');
-                         users.where("EmployeeCode", isEqualTo: empCodeController.text.toUpperCase())
-                          .where("password", isEqualTo: passwordController.text)
-                          .get()
-                          .then((value)  {
-                         //  print('Query snapshot: ${value.docs}');
+                    SharedPreferences pref =
+                        await SharedPreferences.getInstance();
+                    CollectionReference users =
+                        FirebaseFirestore.instance.collection('users');
+                    print(
+                        'Employee Code from controller: ${empCodeController.text}');
+                    users
+                        .where("EmployeeCode",
+                            isEqualTo: empCodeController.text.toUpperCase())
+                        .where("password", isEqualTo: passwordController.text)
+                        .get()
+                        .then((value) {
+                      //  print('Query snapshot: ${value.docs}');
                       if (value.docs.isNotEmpty) {
-                            //  pref.setString("token", credential.user!.uid);
-                              pref.setString("logintype",
-                                  value.docs[0].get("userType") ?? "user");
-                              pref.setString("userID", value.docs[0].get("userId"));
-                             pref.getString("userID") ?? "";
-                              print("USERIDPrint");
-                            //  print(userId);
-                       pref.setString("password", passwordController.text);
-                       pref.setString("employeeCode", empCodeController.text);
+                        //  pref.setString("token", credential.user!.uid);
+                        pref.setString("logintype",
+                            value.docs[0].get("userType") ?? "user");
+                        pref.setString("userID", value.docs[0].get("userId"));
+                        pref.getString("userID") ?? "";
+                        print("USERIDPrint");
+                        //  print(userId);
+                        pref.setString("password", passwordController.text);
+                        pref.setString("employeeCode", empCodeController.text);
                         getAccessToken(context);
-                        print('Document exists with employee code: $empCodeController');
+                        print(
+                            'Document exists with employee code: $empCodeController');
                       } else {
                         Navigator.pop(context);
                         customSuccessSnackBar("Enter valid credentials");
@@ -405,35 +417,31 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: width * 0.5,
                     decoration: new BoxDecoration(
                         borderRadius: BorderRadius.circular(80.0),
-                        gradient: new LinearGradient(
-                            colors: [
-                              // Color.fromARGB(255, 168, 2, 2),
-                              // Color.fromARGB(255, 206, 122, 122)
-                              Color.fromARGB(255, 255, 136, 34),
-                              Color.fromARGB(255, 255, 177, 41)
-                            ]
-                        )
-                    ),
+                        gradient: new LinearGradient(colors: [
+                          // Color.fromARGB(255, 168, 2, 2),
+                          // Color.fromARGB(255, 206, 122, 122)
+                          Color.fromARGB(255, 255, 136, 34),
+                          Color.fromARGB(255, 255, 177, 41)
+                        ])),
                     padding: const EdgeInsets.all(0),
                     child: Text(
                       "LOGIN",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold
-
-                      ),
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
               ),
-
               Container(
                 alignment: Alignment.centerRight,
                 margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                 child: GestureDetector(
                   onTap: () => {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()))
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RegisterScreen()))
                   },
                   child: Text(
                     "Don't Have an Account? Sign up",
@@ -466,31 +474,28 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Container(
-                    height: 40,
-                    width: 27,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white)
-                    ),
-                    child: const Icon(
-                      Icons.error_outline_sharp,
-                      size: 20,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  SizedBox(
-                      width: 230,
-                      child: Text(msg)),
-                  const SizedBox(
-                    width: 10,
-                  ),
+              Container(
+                height: 40,
+                width: 27,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white)),
+                child: const Icon(
+                  Icons.error_outline_sharp,
+                  size: 20,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              SizedBox(width: 230, child: Text(msg)),
+              const SizedBox(
+                width: 10,
+              ),
 
-                  // Icon(Icons.done,color: Colors.white,)
-                ])),
+              // Icon(Icons.done,color: Colors.white,)
+            ])),
         duration: const Duration(seconds: 3),
         // width:MediaQuery.of(context).size. width * 0.9, // Width of the SnackBar.
         // padding: const EdgeInsets.symmetric(
@@ -500,7 +505,7 @@ class _LoginScreenState extends State<LoginScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-        backgroundColor:StyleData.appBarColor2,
+        backgroundColor: StyleData.appBarColor2,
         // backgroundColor: const Color(0xffee5b5b),
       ),
     );
@@ -509,7 +514,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
 class UppercaseTextInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     return TextEditingValue(
       text: newValue.text!.toUpperCase(),
       selection: newValue.selection,
